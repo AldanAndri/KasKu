@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#168bd1">
+<title>Kasku Chat - XII TKR 8</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden}
+body{font-family:Arial,Helvetica,sans-serif;background:#eaf4f9;color:#202124}
+
+/* HEADER */
+.header{
+position:fixed;top:0;left:0;right:0;height:64px;
+background:rgba(255,255,255,.96);
+backdrop-filter:blur(15px);
+-webkit-backdrop-filter:blur(15px);
+border-bottom:1px solid #e4edf2;
+display:flex;align-items:center;padding:7px 10px;
+z-index:20;box-shadow:0 2px 12px #168bd112
+}
+
+.back{
+width:38px;height:45px;display:flex;align-items:center;
+justify-content:center;color:#168bd1;text-decoration:none;
+font-size:18px
+}
+
+/* LOGO KASKU */
+.brand{
+display:flex;align-items:center;gap:9px;flex:1;min-width:0
+}
+
+.logo-mark{
+width:43px;height:43px;border-radius:14px;
+background:linear-gradient(145deg,#42b9f5,#168bd1);
+display:flex;align-items:center;justify-content:center;
+color:#fff;font-size:20px;font-weight:900;
+box-shadow:0 5px 14px #168bd130;
+flex-shrink:0
+}
+
+.brand-text{min-width:0}
+.brand-name{
+font-size:16px;font-weight:800;color:#168bd1;
+line-height:17px
+}
+
+.brand-sub{
+font-size:9px;color:#777;margin-top:2px;
+letter-spacing:.3px
+}
+
+.header-menu{
+width:38px;height:42px;border:0;background:none;
+color:#168bd1;font-size:19px;cursor:pointer
+}
+
+/* CHAT AREA (Disesuaikan agar tidak tertutup nav bawah) */
+.chat{
+position:absolute;top:64px;bottom:130px;left:0;right:0;
+overflow-y:auto;padding:12px 9px 18px;
+background:#eaf4f9;
+background-image:
+radial-gradient(#cfe5ef 1px,transparent 1px);
+background-size:19px 19px;
+scroll-behavior:smooth
+}
+
+.chat::-webkit-scrollbar{width:3px}
+.chat::-webkit-scrollbar-thumb{background:#b7d3df;border-radius:10px}
+
+.chat-info{
+display:flex;justify-content:center;margin:2px 0 14px
+}
+
+.chat-info span{
+background:#fff;border:1px solid #e1edf2;
+color:#60717a;font-size:9px;padding:7px 11px;
+border-radius:10px;text-align:center;
+box-shadow:0 2px 6px #00000008
+}
+
+/* MESSAGE */
+.message{
+display:flex;margin-bottom:8px;
+animation:messageIn .2s ease
+}
+
+.message.me{justify-content:flex-end}
+.message.other{justify-content:flex-start}
+
+.bubble{
+max-width:82%;min-width:80px;
+padding:7px 9px 5px;
+border-radius:11px;
+box-shadow:0 2px 4px #0000000b;
+word-wrap:break-word;overflow-wrap:anywhere
+}
+
+.other .bubble{
+background:#fff;border-top-left-radius:3px
+}
+
+.me .bubble{
+background:#dff4ff;border-top-right-radius:3px;
+border:1px solid #c8eaf9
+}
+
+.sender{
+font-size:10px;font-weight:800;
+color:#168bd1;margin-bottom:3px
+}
+
+.text{
+font-size:13px;line-height:1.4;
+padding-right:39px;white-space:pre-wrap
+}
+
+.time{
+font-size:8px;color:#77838a;
+float:right;margin:6px 0 0 7px;
+white-space:nowrap
+}
+
+@keyframes messageIn{
+from{opacity:0;transform:translateY(5px)}
+to{opacity:1;transform:none}
+}
+
+/* EMPTY */
+.empty-chat{
+height:100%;display:flex;align-items:center;
+justify-content:center;text-align:center;
+color:#7c8a91;font-size:11px
+}
+
+/* INPUT AREA (Diatas Navigasi Bawah) */
+.input-area{
+position:fixed;bottom:65px;left:0;right:0;height:62px;
+background:rgba(255,255,255,.98);
+backdrop-filter:blur(14px);
+border-top:1px solid #e2edf2;
+display:flex;align-items:center;gap:6px;padding:8px;
+z-index:30
+}
+
+.input-name{
+width:82px;height:43px;border:1px solid #e0e8ec;
+outline:0;border-radius:23px;padding:0 11px;
+background:#f5f8fa;font-size:10px
+}
+
+.input-name:focus{border-color:#42b9f5;background:#fff}
+
+.message-input{
+flex:1;height:43px;min-width:0;border:1px solid #e0e8ec;
+outline:0;border-radius:23px;padding:0 15px;
+font-family:Arial;font-size:12px;background:#f5f8fa
+}
+
+.message-input:focus{
+border-color:#42b9f5;background:#fff
+}
+
+.send-btn{
+width:43px;height:43px;border:0;border-radius:50%;
+background:linear-gradient(145deg,#42b9f5,#168bd1);
+color:#fff;display:flex;align-items:center;
+justify-content:center;font-size:15px;
+cursor:pointer;flex-shrink:0;
+box-shadow:0 4px 12px #168bd130
+}
+
+.send-btn:active{transform:scale(.91)}
+.send-btn:disabled{opacity:.5}
+
+/* NAVIGASI BAWAH KONSISTEN */
+.bottom-nav{
+position:fixed;left:50%;bottom:0;
+transform:translateX(-50%);width:100%;
+max-width:480px;height:65px;
+display:flex;background:#fff;
+border-top:1px solid #eee;
+box-shadow:0 -4px 15px #00000008;
+z-index:150
+}
+
+.bottom-nav a{
+flex:1;display:flex;
+flex-direction:column;align-items:center;
+justify-content:center;gap:3px;
+color:#8490a0;font-size:9px;
+text-decoration:none
+}
+
+.bottom-nav i{font-size:16px}
+.bottom-nav a.active{color:#2864df;font-weight:bold}
+
+/* NAMA MODAL */
+.name-modal{
+position:fixed;inset:0;z-index:200;background:#0008;
+display:none;align-items:center;justify-content:center;padding:20px
+}
+
+.name-modal.show{display:flex}
+
+.name-box{
+width:100%;max-width:340px;background:#fff;
+border-radius:20px;padding:22px;
+box-shadow:0 18px 50px #0005
+}
+
+.name-logo{
+width:52px;height:52px;border-radius:16px;
+background:linear-gradient(145deg,#42b9f5,#168bd1);
+display:flex;align-items:center;justify-content:center;
+color:#fff;font-size:23px;font-weight:900;
+margin-bottom:13px
+}
+
+.name-box h3{font-size:18px;margin-bottom:6px;color:#202124}
+
+.name-box p{
+font-size:11px;color:#777;line-height:1.5;margin-bottom:15px
+}
+
+.name-control{
+width:100%;height:44px;border:1px solid #dce5e9;
+border-radius:11px;outline:0;padding:0 12px;font-size:12px
+}
+
+.name-control:focus{border-color:#168bd1}
+
+.name-save{
+width:100%;height:44px;border:0;border-radius:11px;
+background:#168bd1;color:#fff;font-weight:bold;
+margin-top:11px;cursor:pointer
+}
+
+/* DESKTOP */
+@media(min-width:700px){
+.header,.input-area,.bottom-nav{
+max-width:700px;left:50%;right:auto;
+transform:translateX(-50%);width:100%
+}
+
+.chat{
+max-width:700px;left:50%;right:auto;
+transform:translateX(-50%);width:100%;
+border-left:1px solid #dce8ed;
+border-right:1px solid #dce8ed
+}
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+<a href="index.html" class="back">
+<i class="fa-solid fa-arrow-left"></i>
+</a>
+
+<div class="brand">
+<div class="logo-mark">K</div>
+<div class="brand-text">
+<div class="brand-name">Kasku</div>
+<div class="brand-sub">PHONIXSTUDIO • XII TKR 8</div>
+</div>
+</div>
+
+<button class="header-menu" type="button">
+<i class="fa-solid fa-ellipsis-vertical"></i>
+</button>
+</header>
+
+
+<main class="chat" id="chat">
+<div class="chat-info">
+<span>💬 Kasku Chat • Pesan publik untuk siswa XII TKR 8</span>
+</div>
+
+<div id="messages">
+<div class="empty-chat">Menghubungkan ke Kasku Chat...</div>
+</div>
+</main>
+
+
+<div class="input-area">
+<input id="inputName" class="input-name" type="text" maxlength="40" placeholder="Nama">
+<input id="messageInput" class="message-input" type="text" maxlength="500" autocomplete="off" placeholder="Ketik pesan...">
+<button id="sendBtn" class="send-btn" type="button">
+<i class="fa-solid fa-paper-plane"></i>
+</button>
+</div>
+
+
+<nav class="bottom-nav">
+<a href="index.html">
+<i class="fa-solid fa-house"></i>
+<span>Home</span>
+</a>
+<a href="jadwal.html">
+<i class="fa-solid fa-book"></i>
+<span>Jadwal</span>
+</a>
+<a href="tagihan.html">
+<i class="fa-solid fa-file-invoice-dollar"></i>
+<span>Tagihan</span>
+</a>
+<a href="chat.html" class="active">
+<i class="fa-solid fa-comments"></i>
+<span>Chat</span>
+</a>
+<a href="galeri.html">
+<i class="fa-solid fa-image"></i>
+<span>Galeri</span>
+</a>
+</nav>
+
+
+<div class="name-modal" id="nameModal">
+<div class="name-box">
+<div class="name-logo">K</div>
+<h3>Selamat datang di Kasku</h3>
+<p>Masukkan nama kamu sebelum mengirim pesan ke grup Kasku PhonixStudio.</p>
+<input id="nameControl" class="name-control" type="text" maxlength="40" placeholder="Nama kamu">
+<button id="nameSave" class="name-save" type="button">Masuk Chat</button>
+</div>
+</div>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+apiKey: "AIzaSyBVVsQxGULQNJAD-29rRA_2pVyU3wgzfeQ",
+authDomain: "kasku-1ad13.firebaseapp.com",
+projectId: "kasku-1ad13",
+storageBucket: "kasku-1ad13.firebasestorage.app",
+messagingSenderId: "776446739854",
+appId: "1:776446739854:web:b822b255c73623644290df",
+measurementId: "G-4SGE63Y8H5"
+};
+
+if(!firebase.apps.length){
+firebase.initializeApp(firebaseConfig);
+}
+
+const db = firebase.firestore();
+
+const chat = document.getElementById("chat");
+const messages = document.getElementById("messages");
+const messageInput = document.getElementById("messageInput");
+const inputName = document.getElementById("inputName");
+const sendBtn = document.getElementById("sendBtn");
+
+const nameModal = document.getElementById("nameModal");
+const nameControl = document.getElementById("nameControl");
+const nameSave = document.getElementById("nameSave");
+
+let username = localStorage.getItem("kasku_chat_name") || "";
+
+if(!username){
+nameModal.classList.add("show");
+setTimeout(()=>{ nameControl.focus(); }, 200);
+} else {
+inputName.value = username;
+}
+
+nameSave.onclick = function(){
+const name = nameControl.value.trim();
+if(!name){
+alert("Nama wajib diisi!");
+nameControl.focus();
+return;
+}
+username = name;
+localStorage.setItem("kasku_chat_name", username);
+inputName.value = username;
+nameModal.classList.remove("show");
+messageInput.focus();
+};
+
+nameControl.addEventListener("keydown", function(e){
+if(e.key === "Enter"){ nameSave.click(); }
+});
+
+inputName.addEventListener("change", function(){
+const name = inputName.value.trim();
+if(name){
+username = name;
+localStorage.setItem("kasku_chat_name", username);
+}
+});
+
+function formatTime(timestamp){
+if(!timestamp) return "--:--";
+const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+return date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+}
+
+// Realtime Firebase
+db.collection("chat_publik")
+.orderBy("waktu", "asc")
+.limitToLast(100)
+.onSnapshot(function(snapshot){
+messages.innerHTML = "";
+if(snapshot.empty){
+messages.innerHTML = `<div class="empty-chat">Belum ada pesan.<br>Jadilah yang pertama mengirim pesan!</div>`;
+return;
+}
+snapshot.forEach(function(doc){
+buatPesan(doc.data());
+});
+scrollBottom();
+}, function(error){
+console.error("Gagal memuat chat:", error);
+messages.innerHTML = `<div class="empty-chat">Gagal memuat chat.<br>Periksa koneksi Firebase.</div>`;
+});
+
+function buatPesan(data){
+const message = document.createElement("div");
+const isMe = data.sender === username;
+message.className = "message " + (isMe ? "me" : "other");
+
+const bubble = document.createElement("div");
+bubble.className = "bubble";
+
+const sender = document.createElement("div");
+sender.className = "sender";
+sender.textContent = data.sender || "Anonim";
+
+const text = document.createElement("div");
+text.className = "text";
+text.textContent = data.text || "";
+
+const time = document.createElement("span");
+time.className = "time";
+time.textContent = formatTime(data.waktu);
+
+text.appendChild(time);
+bubble.appendChild(sender);
+bubble.appendChild(text);
+message.appendChild(bubble);
+messages.appendChild(message);
+}
+
+async function kirimPesan(){
+const text = messageInput.value.trim();
+const name = username || inputName.value.trim();
+
+if(!name){
+nameModal.classList.add("show");
+nameControl.focus();
+return;
+}
+
+if(!text){
+messageInput.focus();
+return;
+}
+
+sendBtn.disabled = true;
+
+try{
+await db.collection("chat_publik").add({
+sender: name,
+text: text,
+waktu: firebase.firestore.FieldValue.serverTimestamp()
+});
+messageInput.value = "";
+messageInput.focus();
+}catch(error){
+console.error(error);
+alert("Gagal mengirim pesan:\n" + error.message);
+}
+sendBtn.disabled = false;
+}
+
+sendBtn.onclick = kirimPesan;
+
+messageInput.addEventListener("keydown", function(e){
+if(e.key === "Enter"){
+e.preventDefault();
+kirimPesan();
+}
+});
+
+function scrollBottom(){
+setTimeout(function(){
+chat.scrollTop = chat.scrollHeight;
+}, 100);
+}
+</script>
+
+</body>
+</html>

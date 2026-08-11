@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>MBG Gacha - XII TKR 8</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Arial,sans-serif;background:#f3f5fa;color:#172033}
+.app{max-width:480px;margin:auto;min-height:100vh}
+.top{height:220px;padding:22px 18px;color:white;background:linear-gradient(135deg,#087cff,#4965ee,#7048f5);border-radius:0 0 30px 30px;position:relative}
+.mini{font-size:9px;opacity:.7;margin-bottom:8px}.title{font-size:28px;font-weight:800}.sub{font-size:10px;opacity:.75;margin-top:5px}
+.status{position:absolute;left:18px;right:18px;bottom:17px;background:#fff;color:#172033;padding:14px;border-radius:18px;box-shadow:0 10px 30px #12356d22}
+.status small{font-size:8px;color:#8b94a5}.status b{display:block;font-size:20px;margin-top:4px}.badge{float:right;background:#eaf9f2;color:#0a9d68;padding:6px 8px;border-radius:7px;font-size:8px}
+.content{padding:14px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:11px}
+.stat{background:#fff;padding:11px;border-radius:13px;text-align:center}.stat b{font-size:16px}.stat span{display:block;font-size:7px;color:#8992a4;margin-top:4px}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:11px}.modes button,.tool{border:0;background:#fff;color:#667085;padding:12px;border-radius:12px;font-size:9px;font-weight:bold}
+.modes .active{background:linear-gradient(135deg,#087cff,#6748f4);color:#fff}
+.card{background:#fff;border-radius:20px;padding:14px;box-shadow:0 5px 20px #243c6810}.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.head b{font-size:12px}
+.tag{font-size:7px;color:#0a9d68;background:#eaf9f2;padding:6px;border-radius:6px}
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:7px}.slot{height:105px;border-radius:15px;background:linear-gradient(135deg,#eff7ff,#f5f0ff);display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;border:1px solid #e3e8f1}
+.slot small{font-size:7px;color:#8992a4;margin-bottom:7px}.name{font-size:10px;font-weight:800;padding:0 7px;line-height:1.25}.roll{animation:shake .06s infinite}@keyframes shake{50%{transform:translateX(3px)}}
+.mainbtn{width:100%;border:0;margin-top:9px;padding:14px;border-radius:13px;background:linear-gradient(135deg,#087cff,#6748f4);color:#fff;font-size:11px;font-weight:800}.mainbtn:disabled{opacity:.5}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.absentinfo{display:none;margin-top:8px;background:#fff6e5;color:#946818;padding:9px;border-radius:10px;font-size:8px}
+.manage{display:none;background:#fff;border-radius:18px;margin-top:9px;padding:13px}.manage.show{display:block}.manage h3{font-size:12px}.manage p{font-size:8px;color:#8992a4;margin:4px 0 8px}
+.list{max-height:250px;overflow:auto}.row{display:flex;gap:7px;padding:7px 0;border-bottom:1px solid #f0f1f4}.row label{font-size:8px;font-weight:bold}.row input{accent-color:#087cff}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.actions button{border:0;padding:10px;border-radius:10px;font-size:8px;font-weight:bold}.save{background:#087cff;color:#fff}.reset{background:#eef0f4;color:#667085}
+.scratch{display:none}.grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.scard{height:115px;position:relative;border-radius:15px;overflow:hidden;border:1px solid #e0e5ee;background:#f5f7fb;transition:.3s}
+.scontent{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:8px;background:linear-gradient(135deg,#eff7ff,#f5f0ff)}
+.scontent small{font-size:7px;color:#8992a4;margin-bottom:5px}.scontent b{font-size:10px;line-height:1.2}.scontent span{font-size:7px;color:#0a9d68;margin-top:5px}
+.scard canvas{position:absolute;inset:0;width:100%;height:100%;z-index:3;touch-action:none;transition:.35s}.cover{position:absolute;inset:0;background:linear-gradient(135deg,#087cff,#6748f4);z-index:2;display:flex;align-items:center;justify-content:center;color:#fff;font-size:23px;flex-direction:column}
+.cover span{font-size:7px;font-weight:bold;margin-top:3px}.disabled .cover{background:#697386}.disabled canvas{display:none}.disabled:after{content:"TIDAK HADIR";position:absolute;inset:0;z-index:5;display:grid;place-items:center;color:#fff;font-size:8px;font-weight:bold;background:#283143dd}
+.note{margin-top:8px;padding:9px;border-radius:10px;background:#f1f7ff;color:#667085;text-align:center;font-size:7px;line-height:1.4}
+.history{margin-top:16px}.historyhead{display:flex;justify-content:space-between;margin:0 3px 7px}.historyhead b{font-size:11px}.historyhead span{font-size:7px;color:#8992a4}.historylist{display:flex;flex-wrap:wrap;gap:5px}.hist{background:#fff;padding:6px 8px;border-radius:7px;font-size:7px;color:#667085}
+.result{position:fixed;inset:0;z-index:20;background:linear-gradient(145deg,#087cff,#4767ee,#7048f5);display:none;align-items:center;justify-content:center;padding:15px}.result.show{display:flex}
+.resultbox{width:min(100%,440px);background:#fff;border-radius:25px;padding:17px;animation:pop .35s ease}@keyframes pop{from{transform:scale(.9);opacity:0}}
+.resulttop{text-align:center;padding-bottom:12px}.resulttop div{font-size:34px}.resulttop h2{font-size:20px;margin-top:4px}.resulttop p{font-size:8px;color:#8992a4;margin-top:4px}
+.winner{display:flex;align-items:center;gap:9px;padding:10px;background:#f3f7ff;border-radius:12px;margin-bottom:6px}.wnum{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#087cff,#6748f4);color:#fff;display:grid;place-items:center;font-size:8px;font-weight:bold}.wname{font-size:9px;font-weight:800}.wrole{display:block;color:#0a9d68;font-size:6px;margin-top:3px}
+.quote{background:#f3efff;border-radius:12px;padding:12px;text-align:center;margin-top:8px}.quote small{font-size:7px;color:#6174d9;font-weight:bold}.quote p{font-size:9px;font-weight:bold;margin-top:5px;line-height:1.4}
+.resultbuttons{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.resultbuttons button{border:0;padding:12px;border-radius:11px;font-size:8px;font-weight:bold}.again{background:linear-gradient(135deg,#087cff,#6748f4);color:#fff}.home{background:#eef0f4;color:#667085}
+.confetti{position:fixed;top:-10px;width:6px;height:10px;z-index:99;animation:fall 1.7s linear forwards}@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:0}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+<div class="mini">SISTEM PETUGAS MBG</div><div class="title">MBG Gacha 🎲</div><div class="sub">Ambil & kembalikan ompreng</div>
+<div class="status"><span class="badge">● AKTIF</span><small>STATUS SISTEM</small><b id="active">4 Petugas</b></div>
+</header>
+<main class="content">
+<div class="stats"><div class="stat"><b id="total">28</b><span>TOTAL SISWA</span></div><div class="stat"><b id="eligible">28</b><span>BOLEH UNDI</span></div><div class="stat"><b id="round">00</b><span>PUTARAN</span></div></div>
+<div class="modes"><button id="mg" class="active">🎰 GACHA 4</button><button id="ms">🪙 28 KARTU</button></div>
+<section class="card" id="gacha">
+<div class="head"><b>🎲 Pengundian 4 Petugas</b><span class="tag">FAIR MODE 🟢🟡🔴</span></div>
+<div class="slots"><div class="slot"><small>PETUGAS 01</small><div class="name">READY</div></div><div class="slot"><small>PETUGAS 02</small><div class="name">READY</div></div><div class="slot"><small>PETUGAS 03</small><div class="name">READY</div></div><div class="slot"><small>PETUGAS 04</small><div class="name">READY</div></div></div>
+<button class="mainbtn" id="start">⚡ MULAI GACHA</button>
+</section>
+<section class="card scratch" id="scratch">
+<div class="head"><b>🪙 Gosok Kartu Undian</b><span class="tag">28 KARTU</span></div>
+<div class="grid" id="grid"></div>
+<div class="note">Gosok sedikit saja. Setelah sekitar 18% terbuka, kartu akan otomatis tertarik seperti magnet.</div>
+<div class="tools"><button class="tool" id="new">↻ UNDI ULANG</button><button class="tool" id="finish">🏆 HASIL</button></div>
+</section>
+<div class="tools"><button class="tool" id="manageBtn">👥 ABSEN</button><button class="tool" onclick="location.href='index.html'">⌂ MENU UTAMA</button></div>
+<div class="absentinfo" id="ainfo"></div>
+<section class="manage" id="manage"><h3>Diskualifikasi Hari Ini</h3><p>Centang siswa yang tidak hadir agar tidak ikut undian.</p><div class="list" id="list"></div><div class="actions"><button class="save" id="save">✓ SIMPAN</button><button class="reset" id="reset">RESET</button></div></section>
+<section class="history"><div class="historyhead"><b>Riwayat Petugas</b><span id="hc">0 hasil</span></div><div class="historylist" id="history"></div></section>
+</main></div>
+<div class="result" id="result"><div class="resultbox"><div class="resulttop"><div>🏆</div><h2>Petugas Terpilih!</h2><p>4 kartu undian sudah dibuka.</p></div><div id="winners"></div><div class="quote"><small>✨ PESAN RANDOM</small><p id="quote"></p></div><div class="resultbuttons"><button class="again" id="again">↻ UNDI LAGI</button><button class="home" onclick="location.href='index.html'">⌂ KEMBALI</button></div></div></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+// INISIALISASI FIREBASE
+const firebaseConfig = {
+apiKey: "AIzaSyBVVsQxGULQNJAD-29rRA_2pVyU3wgzfeQ",
+authDomain: "kasku-1ad13.firebaseapp.com",
+projectId: "kasku-1ad13",
+storageBucket: "kasku-1ad13.firebasestorage.app",
+messagingSenderId: "776446739854",
+appId: "1:776446739854:web:b822b255c73623644290df",
+measurementId: "G-4SGE63Y8H5"
+};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// LIST NAMA DAN QUOTE
+const S=["AFDAL HUMAMMAD HAZWAN","ALDAN ANDRIYANSYAH","ARI FAZRI TAMAM","BINTANG MAULANA SAPUTRA","DAVINZA PUTRA IRVANA","DIAN ALFAUZI","DIMAS RIZKI FERDIAN","DZAFAR SYIDHIQ A.Y","FADLI","FAZRI EKA PRASETIA","HAIKAL HAMIDI YAZID","INDRA FAUZAN","IZHAR AGUNG NURROHMAN","MOHAMAD FAIZ RIZQI AMRULLAH","MOHAMMAD RIZKI MUSTOFA","MUHAMMAD FADLAN","MUHAMMAD FIRMAN SYAH","MUHAMMAD IBANEZ FAUDZAN ARDHAN","MUHAMMAD RIDHO AL HAKIM","MUHAMMAD RIZIQ","NANA JUHANA","RAFFI NURKHOLIK FAJARUDDIN","RAFLI MAULANA","REVAN DWIYA","TOMI FIRMANSYAH","RISHKI SAEPULLOH","RIZKI OKTAVIANA","SANDY APRILIYANTO"];
+const Q=["Semesta memilihmu. Ompreng menunggumu. 🫡","Hari ini kamu manusia pilihan sistem. 😎","Jangan lupa ambil, jangan lupa kembalikan. 😂","Takdir telah berbicara. 🎲","Empat pahlawan ompreng telah ditemukan! 🏆","Misi hari ini: ompreng aman, kelas nyaman. 🔥","Tidak ada yang bisa kabur dari randomizer. 💀","Selamat bertugas, para pahlawan ompreng! 🫡","Hari ini kamu bukan NPC. Kamu PETUGAS! ⚡","Semoga tugas cepat selesai tanpa drama. 😭"];
+const K="mbg_absent",C="mbg_counts",H="mbg_history",D="mbg_date";
+let audio,round=+localStorage.mbg_round||0,winners=[],revealed=new Set(),history=[];
+const $=id=>document.getElementById(id),slots=document.querySelectorAll(".slot .name");
+
+// SINKRONISASI 1: MENDENGARKAN DATA GRAFIK/COUNTS DARI ADMIN SECARA REAL-TIME
+db.collection("pengaturan").doc("statistik_gacha").onSnapshot(doc => {
+  if (doc.exists && doc.data().counts) {
+    // Apabila Admin mereset per-siswa atau semua, gacha di hp kelas otomatis terupdate
+    localStorage.setItem(C, JSON.stringify(doc.data().counts));
+  }
+});
+
+// SINKRONISASI 2: MENDENGARKAN SINYAL RESET PUTARAN & RIWAYAT DARI ADMIN
+db.collection("pengaturan").doc("gacha").onSnapshot(doc => {
+  if (doc.exists && doc.data().resetSignal) {
+    let lastReset = localStorage.getItem("last_gacha_reset") || 0;
+    if (doc.data().resetSignal > lastReset) {
+      localStorage.removeItem(H); // Hapus text riwayat putaran sebelumnya
+      localStorage.removeItem("mbg_round"); 
+      localStorage.setItem("last_gacha_reset", doc.data().resetSignal);
+      round = 0;
+      update();
+      renderHistory();
+    }
+  }
+});
+
+function today(){let d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
+function absent(){if(localStorage[D]!=today()){localStorage.removeItem(K);localStorage[D]=today()}try{return JSON.parse(localStorage[K]||"[]")}catch(e){return[]}}
+function counts(){try{return JSON.parse(localStorage[C]||"{}")}catch(e){return{}}}
+function eligible(){let a=absent();return S.filter(n=>!a.includes(n))}
+function sound(f=500,d=.07){try{audio||(audio=new AudioContext);let o=audio.createOscillator(),g=audio.createGain();o.frequency.value=f;g.gain.value=.035;o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}catch(e){}}
+
+// SISTEM FAIR MODE (LOGIKA 🟢 🟡 🔴)
+function weighted(arr,num){
+    let c = counts();
+    let a = [...arr];
+    let out = [];
+
+    while (out.length < num && a.length) {
+        // Cari angka kemunculan paling sedikit dari siswa yang ada
+        let minCount = Math.min(...a.map(n => c[n] || 0));
+
+        let w = a.map(n => {
+            let count = c[n] || 0;
+            let diff = count - minCount;
+            
+            if (diff <= 0) return 1000; // 🟢 Belum pernah/paling sedikit (Sangat besar)
+            if (diff === 1) return 10;   // 🟡 Sudah 1x lebih banyak (Rendah)
+            return 1;                   // 🔴 Sudah sering (Sangat minim)
+        });
+
+        let t = w.reduce((x, y) => x + y, 0);
+        let r = Math.random() * t;
+        let i = 0;
+        for (; i < a.length; i++) {
+            if ((r -= w[i]) <= 0) break;
+        }
+        out.push(a[i]);
+        a.splice(i, 1);
+    }
+    return out;
+}
+
+function update(){let a=absent(),e=eligible();$("eligible").textContent=e.length;$("active").textContent=e.length+" Bisa Undi";$("total").textContent=S.length;$("round").textContent=String(round).padStart(2,"0");$("ainfo").style.display=a.length?"block":"none";if(a.length)$("ainfo").textContent="⚠ "+a.length+" siswa tidak hadir dan tidak ikut undian."}
+function renderAbsent(){let a=absent();$("list").innerHTML=S.map((n,i)=>`<div class="row"><input id="a${i}" type="checkbox" value="${n}" ${a.includes(n)?"checked":""}><label for="a${i}">${n}</label></div>`).join("")}
+function renderHistory(){try{history=JSON.parse(localStorage[H]||"[]")}catch(e){history=[]}$("history").innerHTML=history.length?history.slice().reverse().flatMap((r,i)=>r.map(n=>`<span class="hist">R${String(history.length-i).padStart(2,"0")} • ${n}</span>`)).join(""):"<span class='hist'>Belum ada hasil</span>";$("hc").textContent=history.length+" hasil"}
+
+// UPDATE STATS & KIRIM KE FIREBASE ADMIN SAAT GACHA SELESAI
+function finish(w){
+    let c=counts();
+    w.forEach(n=>c[n]=(c[n]||0)+1);
+    
+    // Simpan ke memori lokal sekaligus kirim ke Firebase Admin
+    localStorage[C]=JSON.stringify(c);
+    db.collection("pengaturan").doc("statistik_gacha").set({ counts: c }, { merge: true });
+
+    round++;
+    localStorage.mbg_round=round;
+    history.push(w);
+    if(history.length>6)history.shift();
+    localStorage[H]=JSON.stringify(history);
+    showResult(w);
+    confetti();
+    [520,660,800,1040].forEach((f,i)=>setTimeout(()=>sound(f,.15),i*90));
+    renderHistory();
+}
+
+function showResult(w){$("winners").innerHTML=w.map((n,i)=>`<div class="winner"><div class="wnum">${i+1}</div><div><div class="wname">${n}</div><span class="wrole">✓ PETUGAS MBG HARI INI</span></div></div>`).join("");$("quote").textContent=Q[Math.random()*Q.length|0];$("result").classList.add("show")}
+function confetti(){for(let i=0;i<55;i++){let e=document.createElement("i");e.className="confetti";e.style.left=Math.random()*100+"vw";e.style.background=["#087cff","#6748f4","#00c9ff","#16b978","#ffd166","#fff"][Math.random()*6|0];e.style.animationDelay=Math.random()*.5+"s";document.body.appendChild(e);setTimeout(()=>e.remove(),1900)}}
+function gacha(){let p=eligible();if(p.length<4)return alert("Siswa hadir kurang dari 4!");$("start").disabled=true;let w=weighted(p,4),t=Date.now();slots.forEach(x=>x.classList.add("roll"));function spin(){slots.forEach(x=>x.textContent=p[Math.random()*p.length|0]);sound(180+Math.random()*120,.025);if(Date.now()-t<3000)setTimeout(spin,65);else{slots.forEach((x,i)=>{x.classList.remove("roll");x.textContent=w[i]});$("start").disabled=false;finish(w)}}spin()}
+function build(){let p=eligible();$("grid").innerHTML="";revealed.clear();if(p.length<4)return;winners=weighted(p,4);let shuffled=[...S].sort(()=>Math.random()-.5);shuffled.forEach((n,i)=>{let card=document.createElement("div");card.className="scard";let con=document.createElement("div");con.className="scontent";con.innerHTML=`<small>KARTU ${String(i+1).padStart(2,"0")}</small><b>${n}</b><span>★ KARTU UNDIAN</span>`;card.appendChild(con);if(!p.includes(n)){card.classList.add("disabled");let cv=document.createElement("div");cv.className="cover";cv.textContent="🚫";card.appendChild(cv)}else{let cv=document.createElement("canvas");cv.width=300;cv.height=220;let x=cv.getContext("2d");x.fillStyle="#8993a5";x.fillRect(0,0,300,220);x.fillStyle="#ffffff18";for(let j=0;j<22;j++){x.beginPath();x.arc(Math.random()*300,Math.random()*220,Math.random()*22,0,7);x.fill()}card.appendChild(cv);let cover=document.createElement("div");cover.className="cover";cover.innerHTML="🪙<span>GOSOK</span>";card.appendChild(cover);scratch(card,cv,i,n)}$("grid").appendChild(card)})}
+function scratch(card,cv,i,n){let down=false,last=0,ctx=cv.getContext("2d");function erase(e){if(!down)return;let r=cv.getBoundingClientRect(),x=(e.clientX-r.left)*cv.width/r.width,y=(e.clientY-r.top)*cv.height/r.height;ctx.globalCompositeOperation="destination-out";ctx.beginPath();ctx.arc(x,y,34,0,7);ctx.fill();if(Date.now()-last>100){sound(100,.02);last=Date.now()}let d=ctx.getImageData(0,0,cv.width,cv.height).data,c=0;for(let j=3;j<d.length;j+=4)if(d[j]<20)c++;if(c/(d.length/4)>.18)openCard(card,cv,i,n)}
+cv.addEventListener("pointerdown",e=>{down=true;cv.setPointerCapture(e.pointerId);erase(e)});cv.addEventListener("pointermove",erase);cv.addEventListener("pointerup",()=>down=false);cv.addEventListener("pointercancel",()=>down=false)}
+function openCard(card,cv,i,n){if(revealed.has(i))return;revealed.add(i);let cover=card.querySelector(".cover");cv.style.transform="scale(1.12)";cv.style.opacity="0";cv.style.filter="blur(3px)";cover.style.transform="scale(1.12)";cover.style.opacity="0";cover.style.transition=".35s";cv.style.transition=".35s";setTimeout(()=>{cv.style.display="none";cover.style.display="none";card.style.boxShadow="0 0 0 2px #087cff";sound(winners.includes(n)?850:500,.15)},350);if(winners.includes(n)){card.style.boxShadow="0 0 0 2px #16ad76";card.querySelector(".scontent span").textContent="★ TERPILIH"}if(revealed.size>=4)setTimeout(()=>finish(winners),700)}
+$("start").onclick=gacha;
+$("mg").onclick=()=>{$("mg").classList.add("active");$("ms").classList.remove("active");$("gacha").style.display="block";$("scratch").style.display="none"};
+$("ms").onclick=()=>{$("ms").classList.add("active");$("mg").classList.remove("active");$("gacha").style.display="none";$("scratch").style.display="block";build()};
+$("manageBtn").onclick=()=>{$("manage").classList.toggle("show");renderAbsent()};
+$("save").onclick=()=>{let a=[...document.querySelectorAll(".row input:checked")].map(x=>x.value);localStorage[K]=JSON.stringify(a);localStorage[D]=today();$("manage").classList.remove("show");update();build()};
+$("reset").onclick=()=>{localStorage.removeItem(K);update();renderAbsent();build()};
+$("new").onclick=build;
+$("finish").onclick=()=>{if(revealed.size>=4)finish(winners);else alert("Gosok 4 kartu terlebih dahulu!")};
+$("again").onclick=()=>{$("result").classList.remove("show");setTimeout(()=>$("ms").classList.contains("active")?build():gacha(),300)};
+update();renderAbsent();renderHistory();
+</script>
+</body>
+</html>

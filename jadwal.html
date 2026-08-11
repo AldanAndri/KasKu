@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jadwal XII TKR 8</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--text:#24344a;--muted:#8994a5;--primary:#087cff;--border:#e5eaf0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:var(--bg);color:var(--text);padding-bottom:80px}
+.app{max-width:480px;margin:auto}
+.header{height:215px;padding:20px;color:#fff;background:linear-gradient(135deg,#1554cf,#087fe9,#10b9dc);border-radius:0 0 30px 30px;position:relative;overflow:hidden}
+.header:before{content:"";position:absolute;width:230px;height:230px;border-radius:50%;background:#ffffff14;right:-90px;top:-100px}
+.header:after{content:"";position:absolute;width:130px;height:130px;border-radius:50%;background:#ffffff10;left:-70px;bottom:-80px}
+.top{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2}
+.title{font-size:23px;font-weight:900}.sub{font-size:9px;opacity:.8;margin-top:4px}
+.mode{border:0;background:#ffffff20;color:white;border-radius:12px;width:38px;height:38px;font-size:16px}
+.clock{font-size:8px;background:#ffffff20;width:max-content;padding:7px 10px;border-radius:8px;margin-top:22px}
+.today{position:absolute;left:20px;right:20px;bottom:17px;background:white;color:var(--text);padding:12px 14px;border-radius:17px;box-shadow:0 8px 25px #15508a35;z-index:2}
+.today small{font-size:7px;color:var(--muted)}.today b{display:block;margin-top:4px;font-size:14px}
+.content{padding:17px 15px}.section{font-size:11px;font-weight:900;margin-bottom:10px;color:#687487}
+.day{margin-bottom:18px}.daytitle{display:flex;align-items:center;justify-content:space-between;margin:0 3px 8px}.daytitle b{font-size:15px}.daytitle span{font-size:7px;color:var(--muted)}
+.card{background:var(--card);border-radius:17px;padding:13px;display:flex;gap:10px;margin-bottom:8px;box-shadow:0 4px 18px #1d456c0d;cursor:pointer;transition:.2s}
+.card:active{transform:scale(.98)}
+.bar{width:4px;flex-shrink:0;border-radius:10px;background:linear-gradient(#087cff,#18b8df)}
+.info{flex:1}.time{font-size:7px;color:var(--muted);margin-bottom:5px}.subject{font-size:11px;font-weight:900}.desc{font-size:7px;color:var(--muted);margin-top:5px;line-height:1.4}.arrow{align-self:center;color:#a9b1bc;font-size:20px}
+.badge{display:inline-block;margin-top:7px;padding:4px 7px;border-radius:6px;background:#eaf4ff;color:#087cff;font-size:6px;font-weight:bold}
+.jp{background:linear-gradient(105deg,#fff,#fff5f5);border:1px solid #f1dede}.jp .bar{background:linear-gradient(#e32929 0 34%,#fff 34% 67%,#e32929 67%)}.jp .badge{background:#ffe9e9;color:#d52d2d}
+.empty{background:var(--card);border-radius:15px;padding:20px;text-align:center;color:var(--muted);font-size:8px}
+.modal{display:none;position:fixed;inset:0;background:#0009;z-index:100;align-items:flex-end}.modal.show{display:flex}
+.sheet{width:min(480px,100%);max-height:89vh;overflow:auto;background:#fff;border-radius:25px 25px 0 0;padding:18px 16px 35px;animation:up .25s}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.close{float:right;border:0;background:#edf1f5;width:31px;height:31px;border-radius:50%;font-size:19px}
+.sheet h2{font-size:18px;margin:5px 40px 3px 0}.sheet>small{font-size:8px;color:var(--muted)}
+.intro{margin-top:15px;background:#f0f6ff;padding:11px;border-radius:12px;font-size:8px;line-height:1.6;color:#627086}
+.japanintro{background:#fff1f1}
+.topic{font-size:10px;font-weight:900;margin-top:15px}.material{background:#f7f8fa;padding:10px;border-radius:10px;margin-top:6px;font-size:8px;line-height:1.65;color:#59677a}
+nav{position:fixed;bottom:0;left:0;width:100%;background:var(--card);display:flex;justify-content:space-around;padding:10px 0;border-top:1px solid var(--border);z-index:97}
+nav a{color:var(--muted);text-decoration:none;font-size:9px;display:flex;flex-direction:column;align-items:center;gap:2px}nav a.active{color:var(--primary);font-weight:bold}nav i{font-size:15px}
+.dark{--bg:#101722;--card:#192331;--text:#edf3fa;--muted:#9ba9ba;--border:#2b3746}.dark .today{color:#fff}.dark .card,.dark .empty{background:#192331}.dark .sheet{background:#192331}.dark .material{background:#202c3b}.dark .intro{background:#202e40}.dark .jp{background:#30252a}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+<div class="top">
+<div><div class="title">XII TKR 8</div><div class="sub">Jadwal • Materi • Pembelajaran</div></div>
+<button class="mode" onclick="darkMode()">☾</button>
+</div>
+<div class="clock" id="clock">Memuat waktu...</div>
+<div class="today"><small>HARI INI</small><b id="today">Memuat...</b></div>
+</header>
+
+<main class="content">
+<div class="section">📚 JADWAL PELAJARAN</div>
+<div id="schedule"></div>
+</main>
+</div>
+
+<nav>
+<a href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+<a href="jadwal.html" class="active"><i class="fa-solid fa-book"></i><span>Jadwal</span></a>
+<a href="tagihan.html"><i class="fa-solid fa-file-invoice-dollar"></i><span>Tagihan</span></a>
+<a href="gacha.html"><i class="fa-solid fa-dice"></i><span>MBG</span></a>
+<a href="galeri.html"><i class="fa-solid fa-image"></i><span>Galeri</span></a>
+</nav>
+
+<div class="modal" id="modal">
+<div class="sheet">
+<button class="close" onclick="closeModal()">×</button>
+<h2 id="mTitle"></h2>
+<small id="mTime"></small>
+<div id="mBody"></div>
+</div>
+</div>
+
+<script>
+const defaultData={
+Senin:[
+{mapel:"Produktif TKR",jam:"07.00 - 12.00",materi:[
+["SOP Persiapan & K3","Memahami APD, kondisi area kerja, identitas unit, peralatan, pengamanan pekerjaan dan prosedur keselamatan sebelum melakukan perawatan."],
+["Ruang Mesin","Memahami posisi ruang mesin. Pelajari pemeriksaan kebersihan, panel kontrol, kabel, koneksi, mesin penggerak, rem serta tanda abnormal seperti suara, panas dan getaran."],
+["Atas Kabin","Memahami posisi bagian atas kabin dan komponen yang dapat diperiksa dari area tersebut sesuai SOP unit. Perhatikan perangkat pintu, sensor, kabel dan komponen keselamatan."],
+["Shaft / Ruang Luncur","Memahami posisi shaft. Pelajari pemeriksaan rel, bracket, kabel atau komponen penggerak yang terlihat, sensor, kebersihan dan kondisi abnormal."],
+["Kabin Lift","Periksa pemahaman terhadap kondisi lantai, lampu, ventilasi, tombol operasi, indikator, alarm dan fasilitas komunikasi darurat."],
+["Pintu Kabin","Pelajari pemeriksaan panel pintu, mekanisme buka-tutup, roller atau komponen terkait, sensor dan interlock sesuai tipe lift."],
+["Landing / Pintu Lantai","Pelajari pemeriksaan pintu landing, sill, interlock, indikator, tombol panggil dan kesesuaian posisi berhenti kabin terhadap lantai."],
+["Pit","Memahami posisi pit dan komponen di bagian bawah shaft. Pelajari kebersihan, buffer, sensor dan kondisi abnormal dengan mengikuti prosedur keselamatan."],
+["Sistem Keselamatan","Memahami fungsi emergency stop, door interlock, limit switch, sensor dan perangkat keselamatan lain sesuai desain unit."],
+["Checklist & Dokumentasi","Mampu mencatat tanggal perawatan, kondisi komponen, temuan, tindakan, penggantian komponen dan hasil pemeriksaan."],
+["Target","Mampu membaca SOP, mengetahui posisi komponen, memahami urutan pemeriksaan, K3, APD, checklist dan dokumentasi. Nilai ukur serta toleransi wajib mengikuti manual unit yang digunakan."]
+]}
+],
+Selasa:[
+{mapel:"LPK Bahasa Jepang",jam:"07.00 - 12.00",jp:true,materi:[
+["Hiragana","Kuasai 46 hiragana, dakuten, handakuten, kombinasi ゃ・ゅ・ょ, sokuon っ dan bunyi panjang."],
+["Katakana","Kuasai katakana dasar, kombinasi bunyi, sokuon, bunyi panjang dan kata serapan."],
+["Kosakata","Angka, waktu, tanggal, hari, keluarga, sekolah, tempat, makanan, kendaraan, pekerjaan dan aktivitas sehari-hari."],
+["Kanji Dasar","Mulai menguasai kanji angka, hari, waktu, orang, tempat, arah dan kanji yang sering digunakan pemula."],
+["Partikel","Pahami は, が, を, に, で, と, の, も, から, まで dan へ."],
+["Pola Kalimat","Kuasai pola ～です, ～ではありません, ～ですか, これ・それ・あれ, この・その・あの dan pola dasar lainnya."],
+["Kata Kerja","Kuasai kata kerja dasar untuk pergi, datang, pulang, makan, minum, melihat, mendengar, bekerja, belajar dan beristirahat."],
+["Listening","Mampu menangkap angka, waktu, lokasi, nama, instruksi dan informasi penting dalam percakapan sederhana."],
+["Speaking","Mampu memperkenalkan diri, menyapa, bertanya, menjawab, meminta izin dan berbicara sederhana."],
+["Bahasa Jepang Kerja","Kuasai salam kerja, meminta bantuan, melapor, bertanya saat tidak paham, meminta maaf dan komunikasi dengan atasan."],
+["Target","Utamakan kana, kosakata, pola kalimat, listening, speaking dan komunikasi kerja sebelum naik ke materi lanjutan."]
+]}
+],
+Rabu:[
+{mapel:"Basic Mentality",jam:"07.00 - 09.00",materi:[
+["Disiplin","Ketepatan waktu, kerapian, kepatuhan jadwal dan konsistensi."],
+["Mental","Tanggung jawab, percaya diri, pantang menyerah, menerima kritik dan mampu bekerja dalam tekanan."],
+["Latihan Fisik","Pemanasan, jogging, lari, push-up, sit-up, squat, plank, daya tahan dan pengaturan napas."],
+["Sikap Kerja","Sopan, menghormati instruktur, kerja sama, mengikuti instruksi dan bertanggung jawab."]
+]},
+{mapel:"TKA Bahasa Inggris",jam:"09.00 - 12.00",materi:[
+["Reading","Main idea, supporting detail, specific information, inference, conclusion, reference dan author's purpose."],
+["Vocabulary","Synonym, antonym, contextual meaning, word formation dan vocabulary akademik."],
+["Grammar","Simple Present, Simple Past, Present Continuous, Present Perfect, Future, Passive Voice, Modal, Conditional, Comparative dan Relative Clause."],
+["Text","Descriptive, Narrative, Recount, Procedure, Report, Explanation, Analytical Exposition dan Discussion."],
+["Strategi","Keyword, konteks, bukti pada teks, eliminasi jawaban serta membedakan fakta dan opini."]
+]}
+],
+Kamis:[
+{mapel:"TKA Matematika",jam:"07.00 - 09.00",materi:[
+["Bilangan","Bilangan bulat, pecahan, desimal, persentase, rasio, perbandingan, pangkat, akar dan operasi campuran."],
+["Aljabar","Bentuk aljabar, persamaan linear, pertidaksamaan, SPLDV, faktorisasi dan persamaan kuadrat."],
+["Fungsi","Fungsi linear, fungsi kuadrat, domain, range, grafik dan interpretasi."],
+["Geometri","Garis, sudut, segitiga, segiempat, lingkaran, luas, keliling, volume, jarak, kesebangunan dan kekongruenan."],
+["Statistika","Mean, median, modus, jangkauan, tabel, diagram dan interpretasi data."],
+["Peluang","Ruang sampel, kejadian, peluang sederhana dan frekuensi harapan."],
+["Barisan & Deret","Barisan aritmetika, deret aritmetika, barisan geometri dan deret geometri."],
+["Penalaran","Soal cerita, grafik, tabel, numerasi dan masalah kehidupan sehari-hari."]
+]},
+{mapel:"TKA Bahasa Indonesia",jam:"09.00 - 11.00",materi:[
+["Pemahaman Bacaan","Ide pokok, gagasan utama, gagasan pendukung, informasi tersurat, tersirat, simpulan dan inferensi."],
+["Makna Bahasa","Makna kata, istilah, sinonim, antonim, kata rujukan, konotasi, denotasi dan konteks."],
+["Teks","Deskripsi, narasi, eksposisi, argumentasi, persuasi, prosedur dan laporan."],
+["Kebahasaan","Kalimat efektif, kata baku, ejaan, tanda baca, konjungsi, kohesi dan koherensi."],
+["Penalaran","Sebab-akibat, perbandingan, analogi, generalisasi, argumen dan bukti pendukung."]
+]},
+{mapel:"Basic Mentality",jam:"11.00 - 12.00",materi:[
+["Mental","Disiplin, tanggung jawab, percaya diri, konsistensi dan pantang menyerah."],
+["Sikap","Sopan santun, komunikasi, kerja sama, menghormati orang lain dan mengikuti instruksi."],
+["Fisik","Peregangan, latihan kekuatan, daya tahan, pengaturan napas dan evaluasi."]
+]}
+],
+Jumat:[
+{mapel:"Budaya Jepang",jam:"07.00 - 10.00",jp:true,materi:[
+["Salam Jepang","Ohayou gozaimasu, Konnichiwa, Konbanwa, Oyasuminasai, Arigatou gozaimasu, Sumimasen dan Onegaishimasu."],
+["Ojigi","Memahami membungkuk sebagai salam, penghormatan dan permintaan maaf serta situasi penggunaannya."],
+["Etika Kerja Jepang","Tepat waktu, bersih, rapi, bertanggung jawab, mengikuti aturan dan menjaga kualitas pekerjaan."],
+["HORENSO","Houkoku sebagai laporan, Renraku sebagai komunikasi dan Soudan sebagai konsultasi."],
+["5S","Seiri, Seiton, Seiso, Seiketsu dan Shitsuke serta penerapannya di lingkungan kerja."],
+["Kaizen","Memahami konsep perbaikan berkelanjutan, ketelitian, efisiensi dan peningkatan kualitas."],
+["Kehidupan Jepang","Etika transportasi umum, antre, menjaga suara, kebersihan, fasilitas umum dan ruang pribadi."],
+["Etika Makan","Itadakimasu, Gochisousama deshita dan dasar penggunaan sumpit."],
+["Senpai & Kouhai","Memahami hubungan senior-junior, sikap hormat dan etika dalam kelompok."],
+["Kosakata Budaya","Shigoto, Kaisha, Shokuba, Anzen, Senpai, Kouhai, Kaizen, Seiri, Seiton, Seiso dan Shitsuke."]
+]}
+]};
+
+let data=JSON.parse(localStorage.getItem("jadwal_mapel")||"null")||defaultData;
+const days=["Senin","Selasa","Rabu","Kamis","Jumat"];
+
+function render(){
+let html="";
+days.forEach(day=>{
+let arr=data[day]||[];
+html+=`<section class="day"><div class="daytitle"><b>📅 ${day}</b><span>${arr.length} MAPEL</span></div>`;
+if(!arr.length)html+=`<div class="empty">Belum ada jadwal.</div>`;
+else arr.forEach((x,i)=>{
+html+=`<div class="card ${x.jp?"jp":""}" onclick="openDetail('${day}',${i})">
+<div class="bar"></div><div class="info">
+<div class="time">🕐 ${x.jam}</div>
+<div class="subject">${x.jp?"🇯🇵 ":""}${x.mapel}</div>
+<div class="desc">${x.jp?"Materi Jepang & budaya":"Materi pembelajaran wajib"}</div>
+<span class="badge">${x.jp?"JEPANG":"MATERI"}</span>
+</div><div class="arrow">›</div></div>`;
+});
+html+=`</section>`;
+});
+schedule.innerHTML=html;
+}
+
+function openDetail(day,i){
+let x=data[day][i];
+mTitle.textContent=(x.jp?"🇯🇵 ":"📚 ")+x.mapel;
+mTime.textContent="🕐 "+x.jam+" • "+day;
+mBody.innerHTML=`<div class="intro ${x.jp?"japanintro":""}"><b>📖 MATERI WAJIB DIPELAJARI</b><br>Tekan kembali untuk melihat jadwal lainnya.</div>`+
+x.materi.map((m,i)=>`<div class="topic">${i+1}. ${m[0]}</div><div class="material">${m[1]}</div>`).join("");
+modal.classList.add("show");
+}
+
+function closeModal(){modal.classList.remove("show")}
+modal.onclick=e=>{if(e.target===modal)closeModal()};
+
+function updateClock(){
+let d=new Date();
+clock.textContent="🕐 "+d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})+" WIB • "+d.toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
+let n=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"][d.getDay()];
+let arr=data[n]||[];
+today.textContent=n+(arr.length?" • "+arr.map(x=>x.mapel).join(" • "):" • Tidak ada jadwal");
+}
+
+function darkMode(){
+document.body.classList.toggle("dark");
+localStorage.setItem("jadwal_dark",document.body.classList.contains("dark")?"1":"0");
+}
+
+if(localStorage.getItem("jadwal_dark")==="1")document.body.classList.add("dark");
+render();updateClock();setInterval(updateClock,1000);
+
+window.addEventListener("storage",()=>{
+data=JSON.parse(localStorage.getItem("jadwal_mapel")||"null")||defaultData;
+render();updateClock();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Admin Panel • KasKu</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:#F8FAFC;color:#1E293B}
+
+/* LOGIN ADMIN */
+#loginScreen{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#b8efff,#72d5ff,#4cbaff,#91e2ff,#58c5ff);background-size:400% 400%;animation:bg 12s ease infinite;display:flex;align-items:center;justify-content:center;padding:20px;}
+@keyframes bg{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+.login-card-box{width:100%;max-width:390px;padding:22px;border-radius:25px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.45);backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);box-shadow:0 25px 65px rgba(0,70,150,.15);color:#fff;}
+.login-logo{width:64px;height:64px;margin:0 auto 14px auto;border-radius:20px;background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:950;color:#42b8f5;}
+.field{margin-bottom:12px;text-align:left}
+.field label{display:block;font-size:9px;font-weight:700;letter-spacing:.8px;margin-bottom:6px;color:rgba(255,255,255,.8)}
+.input-custom{width:100%;height:46px;border:1px solid rgba(255,255,255,.3);outline:none;border-radius:14px;padding:0 14px;background:rgba(255,255,255,.15);color:#fff;font-size:12px;}
+.login-btn{width:100%;height:46px;margin-top:6px;border:0;border-radius:14px;background:#fff;color:#209ee9;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 10px 25px rgba(0,70,150,.15);}
+
+/* DASHBOARD ADMIN */
+#adminDashboard{display:none;min-height:100vh;padding-bottom:50px}
+.admin-top-bar{background:linear-gradient(135deg,#348ff2,#61caff);padding:16px;display:flex;justify-content:space-between;align-items:center;color:#fff;position:sticky;top:0;z-index:100;}
+.admin-title{font-size:16px;font-weight:900;display:flex;align-items:center;gap:8px}
+.admin-actions-top{display:flex;gap:8px}
+.top-btn{padding:7px 12px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);border-radius:10px;color:#fff;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:5px}
+
+.admin-tabs{display:flex;gap:6px;padding:12px 16px;background:#fff;overflow-x:auto;border-bottom:1px solid #E2E8F0;white-space:nowrap;position:sticky;top:61px;z-index:90;}
+.admin-tabs::-webkit-scrollbar{display:none;}
+.tab-btn{padding:8px 14px;background:#F1F5F9;border:1px solid #E2E8F0;border-radius:10px;font-size:11px;font-weight:700;color:#64748B;cursor:pointer;}
+.tab-btn.active{background:#2F80ED;color:#fff;border-color:#2F80ED;}
+
+.content-body{padding:16px;max-width:500px;margin:0 auto}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+
+.card{background:#FFFFFF;border:1px solid #E2E8F0;border-radius:18px;padding:16px;margin-bottom:14px;}
+.form-group{margin-bottom:12px}
+.form-group label{font-size:10px;font-weight:700;color:#64748B;display:block;margin-bottom:4px;text-transform:uppercase}
+.form-control{width:100%;padding:11px 12px;border:1px solid #CBD5E1;border-radius:12px;background:#F8FAFC;font-size:11px;color:#1E293B;outline:none;font-weight:500}
+.btn-primary{width:100%;padding:12px;background:#2F80ED;color:white;border:none;border-radius:12px;font-size:12px;font-weight:700;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:6px;}
+.btn-success{background:#10B981;}
+.btn-danger{background:#EF4444;}
+.btn-warning{background:#f59e0b;}
+.card-admin{background:#fff;border-radius:18px;padding:20px;margin-bottom:20px;border:1px solid #e1edf2;}
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+    <div class="login-card-box">
+        <div class="login-logo"><span>K</span></div>
+        <div style="text-align:center; margin-bottom:18px;">
+            <h2 style="font-size:18px; font-weight:900;">Kasku Admin</h2>
+            <p style="font-size:10px; opacity:0.8; margin-top:2px;">ADMINISTRATOR ACCESS</p>
+        </div>
+        <div class="field"><label>EMAIL ADMIN</label><input class="input-custom" id="loginEmail" type="text" placeholder="Masukkan email..."></div>
+        <div class="field"><label>PASSWORD ADMIN</label><input class="input-custom" id="loginPassword" type="password" placeholder="Masukkan password..."></div>
+        <button class="login-btn" onclick="prosesLogin()">Masuk ke Dashboard</button>
+    </div>
+</div>
+
+<div id="adminDashboard">
+    <div class="admin-top-bar">
+        <div class="admin-title"><i class="fa-solid fa-shield-halved"></i> KasKu Admin Panel</div>
+        <div class="admin-actions-top">
+            <a href="index.html" class="top-btn"><i class="fa-solid fa-house"></i> Beranda</a>
+            <button onclick="prosesLogout()" class="top-btn" style="background:rgba(239,68,68,0.3);"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
+        </div>
+    </div>
+
+    <div class="admin-tabs">
+        <button class="tab-btn active" onclick="switchTab('tabAbsen', this)"><i class="fa-solid fa-user-clock"></i> Absen & Gacha</button>
+        <button class="tab-btn" onclick="switchTab('tabPembayaran', this)"><i class="fa-solid fa-cash-register"></i> Pembayaran</button>
+        <button class="tab-btn" onclick="switchTab('tabNotif', this)"><i class="fa-solid fa-bell"></i> Notifikasi</button>
+        <button class="tab-btn" onclick="switchTab('tabTagihan', this)"><i class="fa-solid fa-trophy"></i> Podium</button>
+        <button class="tab-btn" onclick="switchTab('tabGaleri', this)"><i class="fa-solid fa-images"></i> Galeri</button>
+    </div>
+
+    <div class="content-body">
+
+        <div id="tabAbsen" class="tab-pane active">
+            <div class="card-admin">
+                <h3 style="font-size:16px; font-weight:800; color:#168bd1; margin-bottom:14px;"><i class="fa-solid fa-user-clock"></i> Absensi Harian</h3>
+                <div class="form-group"><label>Pilih Siswa</label><select id="selectNamaAbsen" class="form-control" style="font-weight:bold;"></select></div>
+                <div class="form-group"><label>Status</label><select id="selectStatusAbsen" class="form-control" style="font-weight:bold;"><option value="Hadir">Hadir</option><option value="Alpha">Alpha</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option></select></div>
+                <button onclick="simpanAbsen()" class="btn-primary btn-success"><i class="fa-solid fa-check"></i> Kirim Absen</button>
+            </div>
+
+            <div class="card-admin">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+                <div>
+                  <h3 style="font-size:16px; font-weight:800; color:#168bd1; margin:0;"><i class="fa-solid fa-chart-column" style="margin-right:6px;"></i> Grafik Gacha MBG</h3>
+                  <p style="font-size:11px; color:#64748b; margin-top:4px;">Pantau pemerataan gacha siswa.</p>
+                </div>
+                <button type="button" onclick="resetSemuaGachaFirebase()" style="background:#d32f2f; color:#fff; border:0; padding:10px 16px; border-radius:10px; font-weight:bold; font-size:11px; cursor:pointer;"><i class="fa-solid fa-rotate-right"></i> Reset Data (0x)</button>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:16px; background:#f8fafc; padding:12px; border-radius:14px; border:1px solid #e2e8f0; text-align:center;">
+                <div><span style="font-size:18px; font-weight:900; color:#10b981;" id="countHijau">0</span><br><small style="font-size:9px; font-weight:bold;">🟢 Utama</small></div>
+                <div><span style="font-size:18px; font-weight:900; color:#f59e0b;" id="countKuning">0</span><br><small style="font-size:9px; font-weight:bold;">🟡 Rendah</small></div>
+                <div><span style="font-size:18px; font-weight:900; color:#ef4444;" id="countMerah">0</span><br><small style="font-size:9px; font-weight:bold;">🔴 Minim</small></div>
+              </div>
+              <div id="adminGachaList" style="max-height:440px; overflow-y:auto; padding-right:4px;">
+                <span style="font-size:11px; color:#777;">Memuat data 28 siswa...</span>
+              </div>
+            </div>
+        </div>
+
+        <div id="tabPembayaran" class="tab-pane">
+            <div class="card" style="background:linear-gradient(135deg, #0b1220, #172b48); color:white; border:none; text-align:center;">
+                <div style="font-size:11px; color:#b9c4d3; margin-bottom:4px; font-weight:600;">Target Kas Per Siswa Saat Ini</div>
+                <div id="adminInfoTarget" style="font-size:28px; font-weight:900; color:#fff; margin-bottom:4px;">Rp 0</div>
+                <div id="adminInfoHari" style="font-size:10px; color:#8792a2;">Menghitung hari...</div>
+            </div>
+
+            <div class="card-admin">
+                <h3 style="font-size:16px; font-weight:800; color:#168bd1; margin-bottom:14px;"><i class="fa-solid fa-bolt" style="color:#F59E0B;"></i> Input Pembayaran Cepat</h3>
+                <div class="form-group"><label>Pilih Nama Siswa</label><select id="selectBayarSiswa" class="form-control" style="font-weight:bold;"></select></div>
+                <div class="form-group"><label>Nominal Bayar (Rp)</label><input type="number" id="inputBayarNominal" class="form-control" placeholder="Contoh: 2000"></div>
+                <button onclick="prosesBayarCepat()" class="btn-primary btn-success"><i class="fa-solid fa-plus"></i> Tambah Uang Masuk</button>
+            </div>
+
+            <div class="card-admin">
+                <h3 style="font-size:16px; font-weight:800; color:#168bd1; margin-bottom:14px;"><i class="fa-solid fa-list-check"></i> Rekap Kas Masuk</h3>
+                <div class="form-group"><input type="text" id="cariRekapBayar" class="form-control" placeholder="🔍 Cari nama siswa..." oninput="renderRekapPembayaran()"></div>
+                <div id="listRekapPembayaran" style="max-height:350px; overflow-y:auto; padding-right:4px;"></div>
+            </div>
+        </div>
+
+        <div id="tabNotif" class="tab-pane">
+            <div class="card-admin">
+                <h3 style="font-size:16px; font-weight:800; color:#168bd1; margin-bottom:6px;"><i class="fa-solid fa-bell"></i> Kirim Notifikasi / Surat Edaran</h3>
+                <p style="font-size:11px; color:#64748b; margin-bottom:14px;">Terhubung langsung ke halaman notifikasi siswa.</p>
+
+                <div class="form-group"><label>Judul Informasi</label><input type="text" id="notifJudul" class="form-control" placeholder="Contoh: Surat Edaran Libur"></div>
+                <div class="form-group"><label>Kategori</label>
+                    <select id="notifKategori" class="form-control">
+                        <option value="Surat Edaran">📢 Surat Edaran</option>
+                        <option value="Pemberitahuan">🔔 Pemberitahuan</option>
+                        <option value="Update Sistem">🆕 Update Sistem</option>
+                        <option value="Penting">⚠️ Penting</option>
+                        <option value="Iklan">📣 Iklan</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Keterangan / Pesan Lengkap</label><textarea id="notifPesan" rows="3" class="form-control" placeholder="Tulis rincian pesan..."></textarea></div>
+
+                <div class="form-group">
+                    <label>Lampiran Foto / Surat (Opsional)</label>
+                    <input type="file" id="notifFoto" accept="image/*" style="display:none;" onchange="previewNotifFoto(event)">
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <button type="button" onclick="document.getElementById('notifFoto').click()" style="background:#e2e8f0; color:#475569; border:0; padding:10px 15px; border-radius:8px; font-size:11px; font-weight:bold; cursor:pointer;"><i class="fa-solid fa-image"></i> Pilih Foto</button>
+                        <button type="button" id="btnHapusPreview" onclick="hapusPreviewNotif()" style="display:none; background:#fee2e2; color:#ef4444; border:0; padding:10px 15px; border-radius:8px; font-size:11px; font-weight:bold; cursor:pointer;"><i class="fa-solid fa-xmark"></i> Batal</button>
+                    </div>
+                    <img id="notifPreviewImg" src="" style="display:none; width:100%; max-height:180px; object-fit:contain; border-radius:10px; margin-top:10px; border:1px dashed #cbd5e1; padding:4px;">
+                </div>
+
+                <button type="button" id="btnKirimNotif" onclick="kirimNotifikasi()" class="btn-primary btn-success"><i class="fa-solid fa-paper-plane"></i> Kirim Notifikasi Sekarang</button>
+            </div>
+
+            <div class="card-admin">
+                <h4 style="font-size:13px; font-weight:800; color:#475569; margin-bottom:10px;"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Notifikasi Aktif</h4>
+                <div id="adminNotifList" style="max-height:280px; overflow-y:auto;"></div>
+            </div>
+        </div>
+
+        <div id="tabTagihan" class="tab-pane">
+            <div class="card-admin">
+                <h3 style="font-size:16px; font-weight:800; color:#168bd1; margin-bottom:6px;"><i class="fa-solid fa-trophy" style="color:#f59e0b;"></i> Atur Podium Kas</h3>
+                <div class="form-group"><label>👑 Juara 1</label><div style="display:flex; gap:6px;"><input type="text" id="inputPodium1" placeholder="Nama" class="form-control" style="flex:2;"><input type="number" id="inputNominal1" placeholder="Rp" class="form-control" style="flex:1;"></div></div>
+                <div class="form-group"><label>🥈 Juara 2</label><div style="display:flex; gap:6px;"><input type="text" id="inputPodium2" placeholder="Nama" class="form-control" style="flex:2;"><input type="number" id="inputNominal2" placeholder="Rp" class="form-control" style="flex:1;"></div></div>
+                <div class="form-group"><label>🥉 Juara 3</label><div style="display:flex; gap:6px;"><input type="text" id="inputPodium3" placeholder="Nama" class="form-control" style="flex:2;"><input type="number" id="inputNominal3" placeholder="Rp" class="form-control" style="flex:1;"></div></div>
+                <button onclick="simpanDataPodium()" class="btn-primary btn-warning"><i class="fa-solid fa-floppy-disk"></i> Simpan Podium</button>
+            </div>
+        </div>
+
+        <div id="tabGaleri" class="tab-pane">
+            <div class="card-admin">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                    <h3 style="font-size:16px; font-weight:800; color:#168bd1; margin:0;"><i class="fa-solid fa-images"></i> Kelola Galeri Kelas</h3>
+                    <div style="font-size:11px; font-weight:bold; color:#10b981; background:#ecfdf5; padding:6px 12px; border-radius:8px;">Total: <span id="adminTotalFoto">0</span> Foto</div>
+                </div>
+                <div id="adminGaleriGrid" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; max-height:450px; overflow-y:auto;"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBVVsQxGULQNJAD-29rRA_2pVyU3wgzfeQ",
+    authDomain: "kasku-1ad13.firebaseapp.com",
+    projectId: "kasku-1ad13",
+    storageBucket: "kasku-1ad13.firebasestorage.app",
+    messagingSenderId: "776446739854",
+    appId: "1:776446739854:web:b822b255c73623644290df"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const DAFTAR_SISWA = [
+  "AFDAL HUMAMMAD HAZWAN","ALDAN ANDRIYANSYAH","ARI FAZRI TAMAM","BINTANG MAULANA SAPUTRA",
+  "DAVINZA PUTRA IRVANA","DIAN ALFAUZI","DIMAS RIZKI FERDIAN","DZAFAR SYIDHIQ A.Y",
+  "FADLI","FAZRI EKA PRASETIA","HAIKAL HAMIDI YAZID","INDRA FAUZAN",
+  "IZHAR AGUNG NURROHMAN","MOHAMAD FAIZ RIZQI AMRULLAH","MOHAMMAD RIZKI MUSTOFA","MUHAMMAD FADLAN",
+  "MUHAMMAD FIRMAN SYAH","MUHAMMAD IBANEZ FAUDZAN ARDHAN","MUHAMMAD RIDHO AL HAKIM","MUHAMMAD RIZIQ",
+  "NANA JUHANA","RAFFI NURKHOLIK FAJARUDDIN","RAFLI MAULANA","REVAN DWIYA",
+  "TOMI FIRMANSYAH","RISHKI SAEPULLOH","RIZKI OKTAVIANA","SANDY APRILIYANTO"
+];
+
+const selAbsen = document.getElementById("selectNamaAbsen");
+const selBayar = document.getElementById("selectBayarSiswa");
+DAFTAR_SISWA.forEach(nama => {
+    if(selAbsen) selAbsen.add(new Option(nama, nama));
+    if(selBayar) selBayar.add(new Option(nama, nama));
+});
+
+function prosesLogin() {
+    let email = document.getElementById("loginEmail").value.trim();
+    let pw = document.getElementById("loginPassword").value;
+    if (email === "phonixstudio@gmail.com" && pw === "aldanandri") { 
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("adminDashboard").style.display = "block";
+    } else {
+        alert("Email atau Password salah!");
+    }
+}
+function prosesLogout() { location.reload(); }
+function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+// HITUNG TARGET KAS (AUTO-PILOT)
+let targetKasAdmin = 0;
+function hitungTargetAdmin() {
+    const startDate = new Date("2026-07-20T00:00:00");
+    const endDate = new Date();
+    const tanggalMerah = ["2026-08-17", "2026-09-16", "2026-12-25"];
+    let count = 0;
+    let curDate = new Date(startDate.getTime());
+    while (curDate <= endDate) {
+        let day = curDate.getDay();
+        let y = curDate.getFullYear(), m = String(curDate.getMonth()+1).padStart(2,'0'), d = String(curDate.getDate()).padStart(2,'0');
+        if (day !== 0 && day !== 6 && !tanggalMerah.includes(`${y}-${m}-${d}`)) count++;
+        curDate.setDate(curDate.getDate() + 1);
+    }
+    targetKasAdmin = count * 1000;
+    if(document.getElementById("adminInfoTarget")) document.getElementById("adminInfoTarget").textContent = "Rp " + targetKasAdmin.toLocaleString('id-ID');
+    if(document.getElementById("adminInfoHari")) document.getElementById("adminInfoHari").textContent = `Dihitung sejak 20 Juli 2026 (${count} Hari Aktif)`;
+}
+hitungTargetAdmin();
+
+function prosesBayarCepat() {
+    const nama = document.getElementById("selectBayarSiswa").value;
+    const nominal = parseInt(document.getElementById("inputBayarNominal").value);
+    if (!nama || !nominal) return alert("Pilih nama dan isi nominal!");
+
+    let updateSiswa = db.collection("pengaturan").doc("data_kas").set({
+        [nama]: firebase.firestore.FieldValue.increment(nominal)
+    }, { merge: true });
+
+    let updateGlobal = db.collection("keuangan_kas").doc("info_utama").set({
+        saldo: firebase.firestore.FieldValue.increment(nominal),
+        pemasukan: firebase.firestore.FieldValue.increment(nominal)
+    }, { merge: true });
+
+    Promise.all([updateSiswa, updateGlobal]).then(() => {
+        alert("Berhasil!"); document.getElementById("inputBayarNominal").value = "";
+    });
+}
+
+let dataKas = {};
+db.collection("pengaturan").doc("data_kas").onSnapshot(doc => {
+    if(doc.exists) dataKas = doc.data(); renderRekapPembayaran();
+});
+
+function renderRekapPembayaran() {
+    const q = document.getElementById("cariRekapBayar") ? document.getElementById("cariRekapBayar").value.toLowerCase() : "";
+    const cont = document.getElementById("listRekapPembayaran");
+    if(!cont) return;
+    let html = "";
+    DAFTAR_SISWA.forEach(nama => {
+        if (nama.toLowerCase().includes(q)) {
+            let total = dataKas[nama] || 0; let selisih = total - targetKasAdmin;
+            let bText = selisih < 0 ? `Nunggak Rp ${Math.abs(selisih).toLocaleString('id-ID')}` : (selisih === 0 ? "Lunas" : `Lebih Rp ${selisih.toLocaleString('id-ID')}`);
+            let bColor = selisih < 0 ? "#EF4444" : (selisih === 0 ? "#10B981" : "#3B82F6");
+            html += `<div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:12px; border-radius:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                <div><b style="font-size:12px;">${nama}</b><br><span style="font-size:10px; color:#64748B;">Total: Rp ${total.toLocaleString('id-ID')}</span></div>
+                <div style="font-size:10px; font-weight:800; color:#fff; background:${bColor}; padding:4px 8px; border-radius:6px;">${bText}</div>
+            </div>`;
+        }
+    });
+    cont.innerHTML = html;
+}
+
+// 1. SISTEM GACHA MBG (DIPULANGKAN KEMBALI)
+db.collection("pengaturan").doc("statistik_gacha").onSnapshot(doc => {
+  const container = document.getElementById("adminGachaList");
+  let counts = doc.exists && doc.data().counts ? doc.data().counts : {};
+  let allCounts = DAFTAR_SISWA.map(nama => counts[nama] || 0);
+  let minCount = Math.min(...allCounts);
+  let maxCount = Math.max(...allCounts, 1);
+  let html = "", tHijau = 0, tKuning = 0, tMerah = 0;
+
+  DAFTAR_SISWA.forEach((nama, idx) => {
+    let count = counts[nama] || 0;
+    let diff = count - minCount;
+    let color = "";
+    let pct = Math.min(100, Math.max(8, (count / (maxCount + 1)) * 100));
+
+    if (diff <= 0) { color = "#10b981"; tHijau++; if(count===0) pct = 6; }
+    else if (diff === 1) { color = "#f59e0b"; tKuning++; }
+    else { color = "#ef4444"; tMerah++; }
+
+    html += `
+      <div style="background:#f8fafc; border-radius:12px; padding:10px 12px; margin-bottom:8px; border:1px solid #e2e8f0;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <div><span style="font-size:11px; font-weight:800; color:#1e293b;">${idx + 1}. ${nama}</span></div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:11px; font-weight:900; color:#0f172a;">${count}x</span>
+            <button onclick="resetPerSiswa('${nama}')" style="background:#e2e8f0; border:0; width:22px; height:22px; border-radius:50%; cursor:pointer;"><i class="fa-solid fa-rotate-left"></i></button>
+          </div>
+        </div>
+        <div style="width:100%; height:10px; background:#e2e8f0; border-radius:20px; overflow:hidden;">
+          <div style="width:${pct}%; height:100%; background:${color}; border-radius:20px;"></div>
+        </div>
+      </div>`;
+  });
+  if(document.getElementById("countHijau")) document.getElementById("countHijau").textContent = tHijau;
+  if(document.getElementById("countKuning")) document.getElementById("countKuning").textContent = tKuning;
+  if(document.getElementById("countMerah")) document.getElementById("countMerah").textContent = tMerah;
+  if(container) container.innerHTML = html;
+});
+
+function resetSemuaGachaFirebase() {
+  if (confirm("Reset seluruh data gacha menjadi 0?")) {
+    let emptyCounts = {}; DAFTAR_SISWA.forEach(n => emptyCounts[n] = 0);
+    db.collection("pengaturan").doc("statistik_gacha").set({counts: emptyCounts}, {merge:true})
+      .then(() => db.collection("pengaturan").doc("gacha").set({resetSignal: Date.now()}, {merge:true}))
+      .then(() => alert("Berhasil reset semua gacha!"));
+  }
+}
+function resetPerSiswa(nama) {
+  db.collection("pengaturan").doc("statistik_gacha").get().then(doc => {
+    let counts = doc.exists && doc.data().counts ? doc.data().counts : {};
+    counts[nama] = 0;
+    db.collection("pengaturan").doc("statistik_gacha").set({counts:counts}, {merge:true});
+  });
+}
+
+// UPLOAD FOTO NOTIFIKASI
+let notifImageBase64 = null;
+function previewNotifFoto(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement("canvas");
+                let w = img.width, h = img.height, max = 800;
+                if (w > h && w > max) { h *= max/w; w = max; } else if (h > max) { w *= max/h; h = max; }
+                canvas.width = w; canvas.height = h;
+                canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+                notifImageBase64 = canvas.toDataURL("image/jpeg", 0.75);
+                document.getElementById("notifPreviewImg").src = notifImageBase64;
+                document.getElementById("notifPreviewImg").style.display = "block";
+                document.getElementById("btnHapusPreview").style.display = "block";
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+function hapusPreviewNotif() {
+    notifImageBase64 = null;
+    document.getElementById("notifFoto").value = "";
+    document.getElementById("notifPreviewImg").style.display = "none";
+    document.getElementById("btnHapusPreview").style.display = "none";
+}
+
+function kirimNotifikasi() {
+    const judul = document.getElementById("notifJudul").value.trim();
+    const kategori = document.getElementById("notifKategori").value;
+    const pesan = document.getElementById("notifPesan").value.trim();
+    if (!judul || !pesan) return alert("Judul dan pesan wajib diisi!");
+
+    db.collection("notifikasi").add({
+        judul, kategori, pesan,
+        gambar: notifImageBase64 || null,
+        pengirim: "Admin KasKu",
+        waktu: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        alert("Notifikasi terkirim!");
+        document.getElementById("notifJudul").value = "";
+        document.getElementById("notifPesan").value = "";
+        hapusPreviewNotif();
+    });
+}
+
+db.collection("notifikasi").orderBy("waktu", "desc").onSnapshot(snapshot => {
+    const cont = document.getElementById("adminNotifList");
+    if(!cont) return;
+    if(snapshot.empty) { cont.innerHTML = `<span style="font-size:11px; color:#777;">Belum ada riwayat.</span>`; return; }
+    let html = "";
+    snapshot.forEach(doc => {
+        let d = doc.data();
+        html += `<div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:10px; border-radius:10px; border:1px solid #e2e8f0; margin-bottom:8px;">
+            <div style="font-size:11px; font-weight:bold;">${d.judul} <span style="font-size:9px; color:#64748b;">(${d.kategori})</span></div>
+            <button onclick="db.collection('notifikasi').doc('${doc.id}').delete()" style="background:#fee2e2; color:#ef4444; border:0; width:26px; height:26px; border-radius:6px; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
+        </div>`;
+    });
+    cont.innerHTML = html;
+});
+
+// PODIUM & GALERI
+db.collection("pengaturan").doc("podium").onSnapshot(doc => {
+  if (doc.exists) {
+    const d = doc.data();
+    if(document.getElementById('inputPodium1')) document.getElementById('inputPodium1').value = d.juara1 || "";
+    if(document.getElementById('inputNominal1')) document.getElementById('inputNominal1').value = d.nom1 || "";
+    if(document.getElementById('inputPodium2')) document.getElementById('inputPodium2').value = d.juara2 || "";
+    if(document.getElementById('inputNominal2')) document.getElementById('inputNominal2').value = d.nom2 || "";
+    if(document.getElementById('inputPodium3')) document.getElementById('inputPodium3').value = d.juara3 || "";
+    if(document.getElementById('inputNominal3')) document.getElementById('inputNominal3').value = d.nom3 || "";
+  }
+});
+function simpanDataPodium() {
+  db.collection("pengaturan").doc("podium").set({
+    juara1: document.getElementById('inputPodium1').value, nom1: document.getElementById('inputNominal1').value,
+    juara2: document.getElementById('inputPodium2').value, nom2: document.getElementById('inputNominal2').value,
+    juara3: document.getElementById('inputPodium3').value, nom3: document.getElementById('inputNominal3').value
+  }, { merge: true }).then(() => alert("Podium diupdate!"));
+}
+
+db.collection("galeri_foto").orderBy("waktu", "desc").onSnapshot(snapshot => {
+  const container = document.getElementById("adminGaleriGrid");
+  const totalCounter = document.getElementById("adminTotalFoto");
+  if(totalCounter) totalCounter.textContent = snapshot.docs.length;
+  if(snapshot.empty) { if(container) container.innerHTML = "Belum ada foto."; return; }
+  let html = "";
+  snapshot.forEach(doc => {
+    let d = doc.data();
+    html += `<div style="position:relative; border-radius:10px; overflow:hidden; border:1px solid #e2e8f0;"><img src="${d.src}" style="width:100%; height:90px; object-fit:cover;"><button onclick="db.collection('galeri_foto').doc('${doc.id}').delete()" style="position:absolute; top:4px; right:4px; background:#ef4444; color:#fff; border:0; width:22px; height:22px; border-radius:4px;"><i class="fa-solid fa-trash"></i></button></div>`;
+  });
+  if(container) container.innerHTML = html;
+});
+</script>
+</body>
+</html>

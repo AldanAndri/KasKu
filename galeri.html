@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#fff">
+<title>Kasku Images - XII TKR 8</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+-webkit-tap-highlight-color:transparent
+}
+
+html,body{
+width:100%;
+min-height:100%;
+background:#fff
+}
+
+body{
+font-family:Arial,Helvetica,sans-serif;
+color:#202124;
+padding-bottom:76px;
+overflow-x:hidden
+}
+
+/* HEADER */
+.header{
+position:sticky;
+top:0;
+z-index:100;
+background:rgba(255,255,255,.96);
+backdrop-filter:blur(14px);
+-webkit-backdrop-filter:blur(14px);
+border-bottom:1px solid #eee;
+padding:11px 12px 0
+}
+
+.top{
+display:flex;
+align-items:center;
+gap:8px
+}
+
+.logo{
+font-size:20px;
+font-weight:800;
+color:#168bd1;
+white-space:nowrap
+}
+
+.search{
+height:41px;
+flex:1;
+min-width:0;
+display:flex;
+align-items:center;
+background:#f1f3f4;
+border-radius:22px;
+padding:0 12px
+}
+
+.search span{
+font-size:19px;
+color:#777;
+margin-right:7px
+}
+
+.search input{
+width:100%;
+border:0;
+outline:0;
+background:none;
+font-size:12px
+}
+
+/* UPLOAD */
+.uploadBtn{
+height:39px;
+border:0;
+border-radius:21px;
+padding:0 12px;
+background:#e8f6ff;
+color:#168bd1;
+font-size:11px;
+font-weight:700;
+white-space:nowrap;
+cursor:pointer
+}
+
+.uploadBtn:active{
+transform:scale(.95)
+}
+
+#fileInput{
+display:none
+}
+
+/* KATEGORI */
+.category-nav{
+display:flex;
+width:100%;
+margin-top:9px;
+overflow-x:auto;
+scrollbar-width:none
+}
+
+.category-nav::-webkit-scrollbar{
+display:none
+}
+
+.category-nav button{
+position:relative;
+flex:1;
+min-width:25%;
+height:40px;
+border:0;
+background:none;
+color:#666;
+font-size:12px;
+white-space:nowrap;
+cursor:pointer
+}
+
+.category-nav button.active{
+color:#111;
+font-weight:700
+}
+
+.category-nav button.active:after{
+content:"";
+position:absolute;
+bottom:0;
+left:18%;
+right:18%;
+height:3px;
+background:#202124;
+border-radius:4px 4px 0 0
+}
+
+/* MAIN */
+.main{
+padding:12px 6px 25px
+}
+
+.info{
+font-size:11px;
+color:#70757a;
+padding:0 5px 9px
+}
+
+/* GOOGLE IMAGES STYLE */
+.gallery{
+columns:2 150px;
+column-gap:6px
+}
+
+.item{
+break-inside:avoid;
+margin-bottom:6px;
+border-radius:7px;
+overflow:hidden;
+position:relative;
+background:#f1f3f4;
+cursor:pointer;
+animation:show .3s both
+}
+
+.item img{
+display:block;
+width:100%;
+height:auto;
+transition:.25s
+}
+
+.item:active img{
+transform:scale(.98)
+}
+
+.item-overlay{
+position:absolute;
+inset:0;
+display:flex;
+flex-direction:column;
+justify-content:flex-end;
+padding:9px;
+color:#fff;
+background:linear-gradient(transparent 45%,rgba(0,0,0,.8));
+opacity:0;
+transition:.2s
+}
+
+.item:hover .item-overlay{
+opacity:1
+}
+
+.item-title{
+font-size:10px;
+font-weight:bold;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis
+}
+
+.item-sender,.item-time{
+font-size:8px;
+margin-top:2px;
+opacity:.9
+}
+
+@keyframes show{
+from{
+opacity:0;
+transform:translateY(8px)
+}
+to{
+opacity:1;
+transform:none
+}
+}
+
+.empty{
+text-align:center;
+padding:75px 20px;
+color:#777;
+display:none
+}
+
+.empty strong{
+display:block;
+color:#333;
+margin-bottom:7px
+}
+
+/* MODAL FOTO */
+.modal{
+position:fixed;
+inset:0;
+z-index:300;
+display:none;
+align-items:center;
+justify-content:center;
+padding:18px;
+background:rgba(0,0,0,.9)
+}
+
+.modal.show{
+display:flex
+}
+
+.modal-content{
+width:100%;
+max-width:900px;
+text-align:center
+}
+
+.modal img{
+max-width:100%;
+max-height:75vh;
+object-fit:contain;
+border-radius:8px
+}
+
+.close{
+position:fixed;
+top:12px;
+right:14px;
+width:42px;
+height:42px;
+border:0;
+border-radius:50%;
+background:rgba(255,255,255,.15);
+color:#fff;
+font-size:25px;
+z-index:310;
+cursor:pointer
+}
+
+.modalTitle{
+color:#fff;
+font-size:14px;
+font-weight:bold;
+margin-top:10px
+}
+
+.modalSender{
+color:#ddd;
+font-size:10px;
+margin-top:4px
+}
+
+/* FORM UPLOAD */
+.upload-modal{
+position:fixed;
+inset:0;
+z-index:400;
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px;
+background:rgba(0,0,0,.7)
+}
+
+.upload-modal.show{
+display:flex
+}
+
+.upload-box{
+width:100%;
+max-width:380px;
+background:#fff;
+border-radius:19px;
+padding:20px;
+box-shadow:0 15px 40px #0004
+}
+
+.upload-box h3{
+font-size:17px;
+margin-bottom:5px
+}
+
+.upload-desc{
+font-size:11px;
+color:#777;
+margin-bottom:17px
+}
+
+.form-group{
+margin-bottom:13px
+}
+
+.form-group label{
+display:block;
+font-size:10px;
+font-weight:bold;
+color:#666;
+margin-bottom:5px
+}
+
+.required{
+color:#e53935
+}
+
+.optional{
+font-weight:normal;
+color:#999
+}
+
+.form-control{
+width:100%;
+border:1px solid #d8dce1;
+border-radius:10px;
+padding:11px;
+outline:0;
+font-family:Arial;
+font-size:12px
+}
+
+.form-control:focus{
+border-color:#168bd1
+}
+
+.btn-row{
+display:flex;
+gap:8px;
+margin-top:16px
+}
+
+.btn-submit,
+.btn-cancel{
+flex:1;
+border:0;
+border-radius:10px;
+padding:11px;
+font-size:12px;
+font-weight:bold;
+cursor:pointer
+}
+
+.btn-submit{
+background:#168bd1;
+color:#fff
+}
+
+.btn-submit:disabled{
+opacity:.6
+}
+
+.btn-cancel{
+background:#f1f3f4;
+color:#555
+}
+
+/* BOTTOM NAV */
+.bottom-nav{
+position:fixed;
+left:50%;
+bottom:0;
+transform:translateX(-50%);
+width:100%;
+max-width:480px;
+height:70px;
+display:flex;
+background:#fff;
+border-top:1px solid #eee;
+box-shadow:0 -4px 15px #00000008;
+z-index:150
+}
+
+.bottom-nav a{
+flex:1;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+gap:4px;
+color:#8490a0;
+font-size:9px;
+text-decoration:none
+}
+
+.bottom-nav i{
+font-size:17px
+}
+
+.bottom-nav a.active{
+color:#2864df;
+font-weight:bold
+}
+
+@media(min-width:700px){
+.gallery{
+columns:4 210px;
+column-gap:9px
+}
+}
+
+@media(min-width:1100px){
+.gallery{
+columns:5 220px
+}
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+<div class="top">
+<div class="logo">Kasku</div>
+
+<label class="search">
+<span>⌕</span>
+<input id="search" type="search" placeholder="Telusuri gambar Kasku">
+</label>
+
+<button class="uploadBtn" id="uploadBtn" type="button">
+<i class="fa-solid fa-plus"></i>
+Upload
+</button>
+
+<input id="fileInput" type="file" accept="image/*">
+</div>
+
+<div class="category-nav" id="filterNav">
+<button class="active" data-cat="terbaru" type="button">Terbaru</button>
+<button data-cat="semua" type="button">Semua</button>
+<button data-cat="dokumentasi" type="button">Dokumentasi</button>
+<button data-cat="kelas" type="button">Kelas</button>
+</div>
+</header>
+
+
+<main class="main">
+<div class="info" id="info">0 gambar</div>
+
+<div class="gallery" id="gallery"></div>
+
+<div class="empty" id="empty" style="display:none;">
+<strong>Belum ada gambar</strong>
+Jadilah yang pertama mengunggah momen kelas TKR 8!
+</div>
+</main>
+
+
+<div class="upload-modal" id="uploadModal">
+<div class="upload-box">
+<h3>Upload Momen Kasku</h3>
+<div class="upload-desc">Nama pengirim wajib diisi.</div>
+
+<div class="form-group">
+<label>Nama Pengirim <span class="required">*</span></label>
+<input type="text" id="inputNama" class="form-control" placeholder="Nama lengkap atau panggilan" maxlength="60">
+</div>
+
+<div class="form-group">
+<label>Catatan <span class="optional">(opsional)</span></label>
+<textarea id="inputCatatan" class="form-control" rows="3" maxlength="200" placeholder="Boleh dikosongkan..."></textarea>
+</div>
+
+<div class="btn-row">
+<button type="button" class="btn-cancel" id="btnCancelUpload">Batal</button>
+<button type="button" class="btn-submit" id="btnSubmitUpload">Upload Foto</button>
+</div>
+</div>
+</div>
+
+
+<div class="modal" id="modal">
+<button class="close" id="close" type="button">×</button>
+<div class="modal-content">
+<img id="modalImg" alt="Foto Kasku">
+<div class="modalTitle" id="modalTitle"></div>
+<div class="modalSender" id="modalSender"></div>
+</div>
+</div>
+
+
+<nav class="bottom-nav">
+<a href="index.html">
+<i class="fa-solid fa-house"></i>
+<span>Home</span>
+</a>
+<a href="jadwal.html">
+<i class="fa-solid fa-book"></i>
+<span>Jadwal</span>
+</a>
+<a href="tagihan.html">
+<i class="fa-solid fa-file-invoice-dollar"></i>
+<span>Tagihan</span>
+</a>
+<a href="gacha.html">
+<i class="fa-solid fa-dice"></i>
+<span>MBG</span>
+</a>
+<a href="galeri.html" class="active">
+<i class="fa-solid fa-image"></i>
+<span>Galeri</span>
+</a>
+</nav>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+apiKey: "AIzaSyBVVsQxGULQNJAD-29rRA_2pVyU3wgzfeQ",
+authDomain: "kasku-1ad13.firebaseapp.com",
+projectId: "kasku-1ad13",
+storageBucket: "kasku-1ad13.firebasestorage.app",
+messagingSenderId: "776446739854",
+appId: "1:776446739854:web:b822b255c73623644290df",
+measurementId: "G-4SGE63Y8H5"
+};
+
+if(!firebase.apps.length){
+firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+
+const gallery = document.getElementById("gallery");
+const search = document.getElementById("search");
+const fileInput = document.getElementById("fileInput");
+const uploadBtn = document.getElementById("uploadBtn");
+const empty = document.getElementById("empty");
+
+const modal = document.getElementById("modal");
+const modalImg = document.getElementById("modalImg");
+const modalTitle = document.getElementById("modalTitle");
+const modalSender = document.getElementById("modalSender");
+const close = document.getElementById("close");
+const uploadModal = document.getElementById("uploadModal");
+
+let allImages = [];
+let selectedFile = null;
+let currentCategory = "terbaru";
+
+uploadBtn.onclick = function(){
+fileInput.value = "";
+fileInput.click();
+};
+
+fileInput.onchange = function(e){
+if(e.target.files && e.target.files[0]){
+selectedFile = e.target.files[0];
+if(!selectedFile.type.startsWith("image/")){
+alert("Harap pilih file gambar!");
+fileInput.value = "";
+selectedFile = null;
+return;
+}
+document.getElementById("inputNama").value = "";
+document.getElementById("inputCatatan").value = "";
+uploadModal.classList.add("show");
+setTimeout(function(){
+document.getElementById("inputNama").focus();
+}, 100);
+}
+};
+
+function closeUploadModal(){
+uploadModal.classList.remove("show");
+fileInput.value = "";
+selectedFile = null;
+document.getElementById("inputNama").value = "";
+document.getElementById("inputCatatan").value = "";
+document.getElementById("btnSubmitUpload").textContent = "Upload Foto";
+document.getElementById("btnSubmitUpload").disabled = false;
+}
+
+document.getElementById("btnCancelUpload").onclick = closeUploadModal;
+
+function compressImage(file, callback){
+const reader = new FileReader();
+reader.onload = function(e){
+const img = new Image();
+img.onload = function(){
+const canvas = document.createElement("canvas");
+let width = img.width;
+let height = img.height;
+const max_size = 900;
+
+if(width > height){
+if(width > max_size){
+height *= max_size / width;
+width = max_size;
+}
+} else {
+if(height > max_size){
+width *= max_size / height;
+height = max_size;
+}
+}
+
+canvas.width = width;
+canvas.height = height;
+const ctx = canvas.getContext("2d");
+ctx.drawImage(img, 0, 0, width, height);
+const dataUrl = canvas.toDataURL("image/jpeg", 0.75);
+callback(dataUrl);
+};
+img.src = e.target.result;
+};
+reader.readAsDataURL(file);
+}
+
+function prosesUpload(){
+let nama = document.getElementById("inputNama").value.trim();
+let catatan = document.getElementById("inputCatatan").value.trim();
+
+if(!nama){
+alert("Nama pengirim wajib diisi!");
+document.getElementById("inputNama").focus();
+return;
+}
+
+if(!selectedFile){
+alert("Pilih foto terlebih dahulu!");
+return;
+}
+
+let btnSubmit = document.getElementById("btnSubmitUpload");
+btnSubmit.textContent = "Mengunggah...";
+btnSubmit.disabled = true;
+
+compressImage(selectedFile, function(compressedDataUrl){
+db.collection("galeri_foto").add({
+src: compressedDataUrl,
+title: catatan || selectedFile.name.replace(/\.[^/.]+$/, ""),
+sender: nama,
+waktu: firebase.firestore.FieldValue.serverTimestamp()
+})
+.then(function(){
+alert("Foto berhasil diunggah ke Galeri Kelas!");
+closeUploadModal();
+})
+.catch(function(err){
+alert("Gagal mengunggah foto: " + err.message);
+btnSubmit.textContent = "Upload Foto";
+btnSubmit.disabled = false;
+});
+});
+}
+
+document.getElementById("btnSubmitUpload").onclick = prosesUpload;
+
+// Realtime Firebase
+db.collection("galeri_foto")
+.orderBy("waktu", "desc")
+.onSnapshot(function(snapshot){
+let data = [];
+snapshot.forEach(function(doc){
+let item = doc.data();
+item.id = doc.id;
+data.push(item);
+});
+allImages = data;
+renderFiltered();
+}, function(error){
+console.error("Gagal memuat galeri:", error);
+});
+
+function kategoriOtomatis(item){
+const text = ((item.title || "") + " " + (item.sender || "")).toLowerCase();
+const dokumentasi = ["dokumentasi", "kegiatan", "praktik", "praktek", "momen", "acara", "event", "pkl", "ujian", "lomba", "olahraga", "upacara", "kunjungan"];
+const kelas = ["kelas", "tkr", "tkro", "siswa", "murid", "guru", "sekolah", "pelajaran", "angkatan", "wali kelas", "xii", "xi"];
+
+if(dokumentasi.some(function(x){ return text.includes(x); })){
+return "dokumentasi";
+}
+if(kelas.some(function(x){ return text.includes(x); })){
+return "kelas";
+}
+return "semua";
+}
+
+function getTime(timestamp){
+if(!timestamp) return "Waktu belum tersedia";
+const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+const now = new Date();
+const seconds = Math.floor((now - date) / 1000);
+
+if(seconds < 10) return "Baru saja";
+if(seconds < 60) return seconds + " detik lalu";
+const minutes = Math.floor(seconds / 60);
+if(minutes < 60) return minutes + " menit lalu";
+const hours = Math.floor(minutes / 60);
+if(hours < 24) return hours + " jam lalu";
+const days = Math.floor(hours / 24);
+if(days < 7) return days + " hari lalu";
+
+return date.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+}
+
+function renderFiltered(){
+let list = [...allImages];
+const q = search.value.toLowerCase().trim();
+
+list.sort(function(a,b){
+const A = a.waktu && a.waktu.toMillis ? a.waktu.toMillis() : 0;
+const B = b.waktu && b.waktu.toMillis ? b.waktu.toMillis() : 0;
+return B - A;
+});
+
+if(currentCategory === "terbaru"){
+list = list.slice(0, 20);
+} else if(currentCategory === "dokumentasi"){
+list = list.filter(function(x){ return kategoriOtomatis(x) === "dokumentasi"; });
+} else if(currentCategory === "kelas"){
+list = list.filter(function(x){ return kategoriOtomatis(x) === "kelas"; });
+}
+
+if(q){
+list = list.filter(function(x){
+return (
+(x.title && x.title.toLowerCase().includes(q)) ||
+(x.sender && x.sender.toLowerCase().includes(q))
+);
+});
+}
+
+render(list);
+}
+
+document.querySelectorAll(".category-nav button").forEach(function(btn){
+btn.onclick = function(){
+document.querySelectorAll(".category-nav button").forEach(function(x){
+x.classList.remove("active");
+});
+btn.classList.add("active");
+currentCategory = btn.dataset.cat;
+renderFiltered();
+};
+});
+
+function render(list){
+gallery.innerHTML = "";
+empty.style.display = list.length ? "none" : "block";
+
+list.forEach(function(x, i){
+const item = document.createElement("div");
+item.className = "item";
+item.style.animationDelay = (i * 0.025) + "s";
+
+const img = document.createElement("img");
+img.src = x.src;
+img.alt = x.title || "Foto Kasku";
+img.loading = "lazy";
+
+const overlay = document.createElement("div");
+overlay.className = "item-overlay";
+
+const title = document.createElement("div");
+title.className = "item-title";
+title.textContent = x.title || "Tanpa Catatan";
+
+const sender = document.createElement("div");
+sender.className = "item-sender";
+sender.textContent = "Oleh: " + (x.sender || "Anonim");
+
+const time = document.createElement("div");
+time.className = "item-time";
+time.textContent = getTime(x.waktu);
+
+overlay.appendChild(title);
+overlay.appendChild(sender);
+overlay.appendChild(time);
+
+item.appendChild(img);
+item.appendChild(overlay);
+
+item.onclick = function(){
+modalImg.src = x.src;
+modalTitle.textContent = x.title || "Tanpa Catatan";
+modalSender.textContent = "Dikirim oleh: " + (x.sender || "Anonim") + " • " + getTime(x.waktu);
+modal.classList.add("show");
+};
+
+gallery.appendChild(item);
+});
+
+document.getElementById("info").textContent = list.length + " gambar";
+}
+
+search.oninput = function(){
+renderFiltered();
+};
+
+close.onclick = function(){
+modal.classList.remove("show");
+};
+
+modal.onclick = function(e){
+if(e.target === modal){
+modal.classList.remove("show");
+}
+};
+
+document.addEventListener("keydown", function(e){
+if(e.key === "Escape"){
+modal.classList.remove("show");
+closeUploadModal();
+}
+});
+
+uploadModal.onclick = function(e){
+if(e.target === uploadModal){
+closeUploadModal();
+}
+};
+</script>
+
+</body>
+</html>

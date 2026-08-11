@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kas & Tagihan • XII TKR 8</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--text:#26364a;--muted:#8490a0;--primary:#2864df;--border:#e3e8ef;--green:#0ca878;--red:#e34d59;--blue:#3b82f6}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);padding-bottom:75px}
+.app{max-width:480px;margin:auto}
+.header{height:250px;color:#fff;padding:20px;background:linear-gradient(135deg,#1551c9,#087fe5,#11b9dc);border-radius:0 0 30px 30px;position:relative;overflow:hidden}
+.header:before{content:"";position:absolute;width:230px;height:230px;background:#fff1;border-radius:50%;right:-100px;top:-100px}
+.header:after{content:"";position:absolute;width:140px;height:140px;background:#fff1;border-radius:50%;left:-80px;bottom:-90px}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2}
+.title{font-size:23px;font-weight:900}
+.sub{font-size:9px;opacity:.8;margin-top:4px}
+.mode{width:39px;height:39px;border:1px solid #ffffff40;background:#ffffff20;color:#fff;border-radius:12px;font-size:16px;cursor:pointer}
+.clock{font-size:8px;background:#ffffff20;padding:7px 10px;border-radius:8px;width:max-content;margin-top:14px}
+.summary{position:absolute;left:18px;right:18px;bottom:16px;background:#fff;color:var(--text);border-radius:18px;padding:14px;box-shadow:0 8px 25px #164c8930}
+.summary small{font-size:7px;color:var(--muted)}
+.total{font-size:22px;font-weight:900;margin-top:3px}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px}
+.stat{background:#f5f7fa;border-radius:10px;padding:8px 6px;text-align:center}
+.stat small{font-size:6px}
+.stat b{display:block;font-size:8px;margin-top:3px}
+.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}
+.content{padding:17px 15px}
+.search{height:43px;background:var(--card);border:1px solid var(--border);border-radius:13px;display:flex;align-items:center;gap:9px;padding:0 12px}
+.search i{font-size:12px;color:var(--muted)}
+.search input{width:100%;border:0;outline:0;background:transparent;font-size:10px;color:var(--text)}
+.filters{display:flex;gap:6px;margin:10px 0 16px;overflow:auto;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.filters button{border:0;background:var(--card);color:var(--muted);border-radius:9px;padding:8px 12px;font-size:8px;font-weight:bold;white-space:nowrap;cursor:pointer}
+.filters button.active{background:var(--primary);color:#fff}
+.section-title{font-size:11px;font-weight:900;color:#687587;margin-bottom:9px}
+.item{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:12px;margin-bottom:8px;box-shadow:0 3px 15px #1b456b09;cursor:pointer;transition:0.2s}
+.item:active{transform:scale(0.98)}
+.item-top{display:flex;gap:10px;align-items:center}
+.avatar{width:39px;height:39px;border-radius:12px;background:linear-gradient(135deg,#2864df,#10b9dc);display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:900;flex-shrink:0}
+.info{flex:1;min-width:0}
+.name{font-size:10px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ket{font-size:8px;color:var(--muted);margin-top:4px}
+.status{font-size:7px;font-weight:900;padding:5px 7px;border-radius:7px}
+.status.lunas{color:var(--green);background:#e4f8f0}
+.status.belum{color:var(--red);background:#ffe8eb}
+.status.lebih{color:var(--blue);background:#e0f2fe}
+.price{font-size:11px;font-weight:900;color:var(--primary);margin:10px 0 0 49px}
+.date{font-size:7px;color:var(--muted);margin:3px 0 0 49px}
+.empty{background:var(--card);border-radius:15px;padding:30px 15px;text-align:center;color:var(--muted);font-size:9px}
+.empty i{font-size:25px;margin-bottom:8px;display:block;color:#b9c2ce}
+.modal{display:none;position:fixed;inset:0;background:#0009;z-index:100;align-items:flex-end}
+.modal.show{display:flex}
+.sheet{width:min(480px,100%);background:var(--card);border-radius:25px 25px 0 0;padding:18px 16px 30px;animation:up .25s}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.close{float:right;border:0;background:#eef2f6;color:#596575;width:32px;height:32px;border-radius:50%;font-size:19px;cursor:pointer}
+.sheet h2{font-size:16px;margin:4px 45px 3px;color:var(--text)}
+.sheet-sub{font-size:8px;color:var(--muted)}
+.detail{background:#f5f7fa;border-radius:14px;margin-top:15px;padding:10px}
+.row{display:flex;justify-content:space-between;padding:8px 3px;border-bottom:1px solid #e2e7ed;font-size:9px;color:var(--text)}
+.row:last-child{border:0}
+.row b{font-size:10px}
+.modal-status{text-align:center;padding:10px;border-radius:10px;font-size:9px;font-weight:bold;margin-top:10px}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--card);display:flex;justify-content:space-around;padding:10px 0;border-top:1px solid var(--border);z-index:97;box-shadow:0 -4px 15px rgba(0,0,0,0.03)}
+nav a{color:var(--muted);text-decoration:none;font-size:9px;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav a.active{color:var(--primary);font-weight:bold}
+nav i{font-size:16px}
+.dark{--bg:#101722;--card:#192331;--text:#edf3fa;--muted:#9ba9ba;--border:#2b3746}
+.dark .summary{color:#fff}.dark .stat,.dark .detail{background:#202c3b}
+.dark .search,.dark .item{background:var(--card)}
+.dark .row{border-bottom-color:#2b3746}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+<div class="top">
+<div>
+<div class="title">Kas & Tagihan</div>
+<div class="sub">XII TKR 8 • Sistem Auto-Pilot</div>
+</div>
+<button class="mode" onclick="toggleDark()">☾</button>
+</div>
+<div class="clock" id="clock">Memuat...</div>
+<div class="summary">
+<small>TARGET KAS PER SISWA</small>
+<div class="total" id="targetInfo">Rp 0</div>
+<div class="stats">
+<div class="stat"><small>TOTAL KAS</small><b class="blue" id="totalKasMasuk">Rp0</b></div>
+<div class="stat"><small>LUNAS / LEBIH</small><b class="green" id="countLunas">0 Org</b></div>
+<div class="stat"><small>NUNGGAK</small><b class="red" id="countNunggak">0 Org</b></div>
+</div>
+</div>
+</header>
+
+<main class="content">
+<div class="search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input id="search" placeholder="Cari nama siswa..." oninput="render()">
+</div>
+
+<div class="filters">
+<button class="active" onclick="setFilter('semua',this)">Semua</button>
+<button onclick="setFilter('Belum Lunas',this)">Belum Lunas</button>
+<button onclick="setFilter('Lunas',this)">Lunas / Lebih</button>
+</div>
+
+<div class="section-title">💳 STATUS KAS SISWA</div>
+<div id="list"></div>
+</main>
+</div>
+
+<nav>
+<a href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+<a href="jadwal.html"><i class="fa-solid fa-book"></i><span>Jadwal</span></a>
+<a href="tagihan.html" class="active"><i class="fa-solid fa-file-invoice-dollar"></i><span>Tagihan</span></a>
+<a href="gacha.html"><i class="fa-solid fa-dice"></i><span>MBG</span></a>
+<a href="galeri.html"><i class="fa-solid fa-image"></i><span>Galeri</span></a>
+</nav>
+
+<div class="modal" id="modal">
+<div class="sheet">
+<button class="close" onclick="closeModal()">×</button>
+<h2 id="mName"></h2>
+<div class="sheet-sub" id="mKet">Rincian Pembayaran Kas Kelas</div>
+<div class="detail" id="detail"></div>
+<div id="mStatus"></div>
+</div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+apiKey: "AIzaSyBVVsQxGULQNJAD-29rRA_2pVyU3wgzfeQ",
+authDomain: "kasku-1ad13.firebaseapp.com",
+projectId: "kasku-1ad13",
+storageBucket: "kasku-1ad13.firebasestorage.app",
+messagingSenderId: "776446739854",
+appId: "1:776446739854:web:b822b255c73623644290df",
+measurementId: "G-4SGE63Y8H5"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const DAFTAR_SISWA = [
+  "AFDAL HUMAMMAD HAZWAN","ALDAN ANDRIYANSYAH","ARI FAZRI TAMAM","BINTANG MAULANA SAPUTRA",
+  "DAVINZA PUTRA IRVANA","DIAN ALFAUZI","DIMAS RIZKI FERDIAN","DZAFAR SYIDHIQ A.Y",
+  "FADLI","FAZRI EKA PRASETIA","HAIKAL HAMIDI YAZID","INDRA FAUZAN",
+  "IZHAR AGUNG NURROHMAN","MOHAMAD FAIZ RIZQI AMRULLAH","MOHAMMAD RIZKI MUSTOFA","MUHAMMAD FADLAN",
+  "MUHAMMAD FIRMAN SYAH","MUHAMMAD IBANEZ FAUDZAN ARDHAN","MUHAMMAD RIDHO AL HAKIM","MUHAMMAD RIZIQ",
+  "NANA JUHANA","RAFFI NURKHOLIK FAJARUDDIN","RAFLI MAULANA","REVAN DWIYA",
+  "TOMI FIRMANSYAH","RISHKI SAEPULLOH","RIZKI OKTAVIANA","SANDY APRILIYANTO"
+];
+
+let dataKas = {};
+let targetKasAdmin = 0;
+let filter = "semua";
+
+function rp(n){
+return new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(n);
+}
+
+function initials(n){
+if(!n) return "TKR";
+return n.split(" ").map(x=>x[0]).slice(0,2).join("");
+}
+
+// Hitung Target Kas Otomatis
+function hitungTarget() {
+    const startDate = new Date("2026-07-20T00:00:00");
+    const endDate = new Date();
+    const tanggalMerah = ["2026-08-17", "2026-09-16", "2026-12-25"];
+    let count = 0;
+    let curDate = new Date(startDate.getTime());
+    
+    while (curDate <= endDate) {
+        let day = curDate.getDay();
+        let y = curDate.getFullYear(), m = String(curDate.getMonth()+1).padStart(2,'0'), d = String(curDate.getDate()).padStart(2,'0');
+        if (day !== 0 && day !== 6 && !tanggalMerah.includes(`${y}-${m}-${d}`)) count++;
+        curDate.setDate(curDate.getDate() + 1);
+    }
+    targetKasAdmin = count * 1000;
+    document.getElementById("targetInfo").textContent = "Rp " + targetKasAdmin.toLocaleString('id-ID');
+}
+hitungTarget();
+
+// Ambil data kas dari Firestore (Sinkron dengan admin.html)
+db.collection("pengaturan").doc("data_kas").onSnapshot(doc => {
+    if(doc.exists) dataKas = doc.data();
+    render();
+});
+
+function render(){
+    const cari = document.getElementById("search").value.toLowerCase();
+    const listCont = document.getElementById("list");
+    
+    let totalMasukSemua = 0;
+    let cLunas = 0;
+    let cNunggak = 0;
+    
+    let html = "";
+    let filteredList = [];
+
+    DAFTAR_SISWA.forEach((nama, idx) => {
+        let totalBayar = dataKas[nama] || 0;
+        totalMasukSemua += totalBayar;
+        let selisih = totalBayar - targetKasAdmin;
+        
+        let statusKey = "";
+        let badgeText = "";
+        let badgeClass = "";
+        
+        if(selisih < 0) {
+            statusKey = "Belum Lunas";
+            badgeText = `Nunggak Rp ${Math.abs(selisih).toLocaleString('id-ID')}`;
+            badgeClass = "belum";
+            cNunggak++;
+        } else if(selisih === 0) {
+            statusKey = "Lunas";
+            badgeText = "LUNAS";
+            badgeClass = "lunas";
+            cLunas++;
+        } else {
+            statusKey = "Lunas";
+            badgeText = `Lebih Rp ${selisih.toLocaleString('id-ID')}`;
+            badgeClass = "lebih";
+            cLunas++;
+        }
+
+        if(nama.toLowerCase().includes(cari)) {
+            if(filter === "semua" || (filter === "Belum Lunas" && statusKey === "Belum Lunas") || (filter === "Lunas" && statusKey === "Lunas")) {
+                filteredList.push({nama, totalBayar, selisih, badgeText, badgeClass, idx});
+            }
+        }
+    });
+
+    document.getElementById("totalKasMasuk").textContent = rp(totalMasukSemua);
+    document.getElementById("countLunas").textContent = cLunas + " Org";
+    document.getElementById("countNunggak").textContent = cNunggak + " Org";
+
+    if(!filteredList.length){
+        listCont.innerHTML = `<div class="empty"><i class="fa-solid fa-file-circle-xmark"></i>Tidak ada data siswa ditemukan.</div>`;
+        return;
+    }
+
+    filteredList.forEach(item => {
+        html += `
+        <div class="item" onclick="detailSiswa('${item.nama}', ${item.totalBayar}, ${item.selisih})">
+            <div class="item-top">
+                <div class="avatar">${initials(item.nama)}</div>
+                <div class="info">
+                    <div class="name">${item.idx + 1}. ${item.nama}</div>
+                    <div class="ket">Target Kas Saat Ini: Rp ${targetKasAdmin.toLocaleString('id-ID')}</div>
+                </div>
+                <div class="status ${item.badgeClass}">${item.badgeText}</div>
+            </div>
+            <div class="price">Sudah Dibayar: ${rp(item.totalBayar)}</div>
+        </div>`;
+    });
+
+    listCont.innerHTML = html;
+}
+
+function setFilter(x, el){
+    filter = x;
+    document.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
+    el.classList.add("active");
+    render();
+}
+
+function detailSiswa(nama, totalBayar, selisih){
+    document.getElementById("mName").textContent = nama;
+    
+    let ketStatus = "";
+    let statusColor = "";
+    let statusBg = "";
+    
+    if(selisih < 0) {
+        ketStatus = `MENUNGGAK SEBESAR Rp ${Math.abs(selisih).toLocaleString('id-ID')}`;
+        statusColor = "#e34d59"; statusBg = "#ffe8eb";
+    } else if(selisih === 0) {
+        ketStatus = "SUDAH LUNAS TEPAT";
+        statusColor = "#0ca878"; statusBg = "#e4f8f0";
+    } else {
+        ketStatus = `SALDO LEBIH / TABUNGAN Rp ${selisih.toLocaleString('id-ID')}`;
+        statusColor = "#3b82f6"; statusBg = "#e0f2fe";
+    }
+
+    document.getElementById("detail").innerHTML = `
+        <div class="row"><span>Target Kas Saat Ini</span><b>Rp ${targetKasAdmin.toLocaleString('id-ID')}</b></div>
+        <div class="row"><span>Total Disetor Siswa</span><b>${rp(totalBayar)}</b></div>
+        <div class="row"><span>Status Keuangan</span><b>${selisih < 0 ? 'Kurang' : (selisih === 0 ? 'Pas' : 'Lebih')}</b></div>
+    `;
+
+    document.getElementById("mStatus").innerHTML = `<div class="modal-status" style="background:${statusBg};color:${statusColor}">${ketStatus}</div>`;
+    document.getElementById("modal").classList.add("show");
+}
+
+function closeModal(){
+    document.getElementById("modal").classList.remove("show");
+}
+
+document.getElementById("modal").onclick = function(e){
+    if(e.target === this) closeModal();
+};
+
+function toggleDark(){
+    document.body.classList.toggle("dark");
+    localStorage.setItem("tagihan_dark", document.body.classList.contains("dark") ? "1" : "0");
+}
+
+function clock(){
+    const d = new Date();
+    document.getElementById("clock").textContent =
+    "🕐 " + d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"}) +
+    " WIB • " + d.toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
+}
+
+if(localStorage.getItem("tagihan_dark") === "1") document.body.classList.add("dark");
+
+clock();
+setInterval(clock, 1000);
+</script>
+</body>
+</html>
