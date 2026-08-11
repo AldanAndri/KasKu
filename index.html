@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#72d4ff">
   <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#111111">
+  <link rel="manifest" href="./manifest.json">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1138,7 +1139,9 @@ db.collection("pengaturan").doc("data_kas").onSnapshot(doc => {
     }
 });
 
-  <script>
+  </script>
+
+<script>
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>{
     navigator.serviceWorker.register("./sw.js")
@@ -1147,5 +1150,6 @@ if("serviceWorker" in navigator){
   });
 }
 </script>
+
 </body>
 </html>
