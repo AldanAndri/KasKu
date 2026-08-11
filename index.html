@@ -1138,6 +1138,14 @@ db.collection("pengaturan").doc("data_kas").onSnapshot(doc => {
     }
 });
 
+  <script>
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("./sw.js")
+      .then(()=>console.log("KasKu PWA aktif"))
+      .catch(err=>console.error("Service Worker:",err));
+  });
+}
 </script>
 </body>
 </html>
